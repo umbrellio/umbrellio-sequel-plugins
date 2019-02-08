@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "sequel"
+require "umbrellio-sequel-plugins"
+require "irb"
+require_relative "../database"
+
+Dir["#{__dir__}/lib/**/*.rb"].each { |f| require f }
+
+IRB.start(__FILE__)
