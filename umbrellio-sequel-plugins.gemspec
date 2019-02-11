@@ -5,10 +5,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = "umbrellio-sequel-plugins"
-  spec.version = "0.1.1"
+  spec.version = "0.1.2"
   spec.authors = ["nulldef"]
   spec.email = ["nulldefiner@gmail.com"]
   spec.required_ruby_version = ">= 2.4"
+  spec.homepage = "https://github.com/umbrellio/umbrellio-sequel-plugins"
+  spec.licenses = ["MIT"]
 
   spec.summary = "Sequel plugins"
   spec.description = "Sequel plugins"
