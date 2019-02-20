@@ -15,7 +15,7 @@ end
 require "bundler/setup"
 require "sequel"
 require "pry"
-require_relative "../database"
+require_relative "../utils/database"
 
 Dir["#{__dir__}/../lib/sequel/**/*.rb"].each { |f| require f }
 
