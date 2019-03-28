@@ -1,22 +1,33 @@
 # frozen_string_literal: true
 
+def outer_method(direction)
+  ::INTERCEPTOR << "outer_#{direction}"
+end
+
 RSpec.describe "methods_in_migrations" do
   specify do
     stub_const("INTERCEPTOR", [])
 
     migration = Sequel.migration do
-      def simple_method(direction)
-        INTERCEPTOR << direction
+      def inner_method(direction)
+        INTERCEPTOR << "inner_#{direction}"
       end
 
-      up   { simple_method(:up) }
-      down { simple_method(:down) }
+      up do
+        inner_method(:up)
+        outer_method(:up)
+      end
+
+      down do
+        inner_method(:down)
+        outer_method(:down)
+      end
     end
 
     migration.apply(DB, :up)
-    expect(INTERCEPTOR).to contain_exactly(:up)
+    expect(INTERCEPTOR).to contain_exactly("inner_up", "outer_up")
 
     migration.apply(DB, :down)
-    expect(INTERCEPTOR).to contain_exactly(:up, :down)
+    expect(INTERCEPTOR).to contain_exactly("inner_up", "outer_up", "inner_down", "outer_down")
   end
 end

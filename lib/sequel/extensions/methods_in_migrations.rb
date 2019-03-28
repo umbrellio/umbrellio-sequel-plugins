@@ -12,6 +12,6 @@ Sequel::SimpleMigration.prepend(Module.new do
 
     # NOTE: our extension
     prok = public_send(direction)
-    Symbiont::Executor.evaluate(db, &prok) if prok
+    Symbiont::Executor.evaluate_private(db, &prok) if prok
   end
 end)
