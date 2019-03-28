@@ -126,7 +126,7 @@ DB.synchronize_with([:ruby, :forever]) { p "Hey, I'm in transaction!"; sleep 5 }
 
 Enable: `Sequel.extension(:methods_in_migrations)`
 
-Support for method definitions and invokations inside `Sequel.migration`.
+Support for method definitions and invocations inside `Sequel.migration`.
 
 Example
 
