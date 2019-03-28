@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'symbiont'
+require "symbiont"
 
 Sequel::SimpleMigration.prepend(Module.new do
-
   def apply(db, direction)
     # :nocov:
     unless [:up, :down].include?(direction) # NOTE: original code
@@ -11,8 +10,8 @@ Sequel::SimpleMigration.prepend(Module.new do
     end
     # :nocov:
 
-    if prok = public_send(direction)
-      Symbiont::Executor.evaluate(db, &prok) # NOTE: our extension
-    end
+    # NOTE: our extension
+    prok = public_send(direction)
+    Symbiont::Executor.evaluate(db, &prok) if prok
   end
 end)

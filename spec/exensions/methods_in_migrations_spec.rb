@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe 'methods_in_migrations' do
+RSpec.describe "methods_in_migrations" do
   specify do
-    stub_const('INTERCEPTOR', [])
+    stub_const("INTERCEPTOR", [])
 
     migration = Sequel.migration do
       def simple_method(direction)
