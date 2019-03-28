@@ -140,14 +140,12 @@ Sequel.migration do
   end
 
   # use
-  up   { get_data }
+  up { get_data }
   down { get_data }
 
   # without extension:
   #   => NameError: undefined local variable or method `get_data' for #<Sequel::Postgres::Database>
 end
-
-Sequel.extension(:methods_in_migrations)
 ```
 
 ## Duplicate
