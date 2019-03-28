@@ -128,7 +128,7 @@ Enable: `Sequel.extension(:methods_in_migrations)`
 
 Support for method definitions and invocations inside `Sequel.migration`.
 
-Example
+Example:
 
 ```ruby
 Sequel.extension(:methods_in_migrations)
