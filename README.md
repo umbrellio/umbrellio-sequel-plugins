@@ -17,22 +17,23 @@ And then execute:
 
 # Extensions
 
-- CurrencyRates
-- PGTools
-- Slave
-- Synchronize
+- `CurrencyRates`
+- `PGTools`
+- `Slave`
+- `Synchronize`
+- `methods_in_migrations`
 
 # Plugins
 
-- Duplicate
-- GetColumnValue
-- StoreAccessors
-- Synchronize
-- Upsert
-- WithLock
+- `Duplicate`
+- `GetColumnValue`
+- `StoreAccessors`
+- `Synchronize`
+- `Upsert`
+- `WithLock`
 
 # Tools
-- TimestampMigratorUndoExtension
+- `TimestampMigratorUndoExtension`
 
 ## CurrencyRates
 
@@ -121,6 +122,32 @@ DB.synchronize_with([:ruby, :forever]) { p "Hey, I'm in transaction!"; sleep 5 }
 # => COMMIT
 ```
 
+## Methods in Migrations
+
+Enable: `Sequel.extension(:methods_in_migrations)`
+
+Support for method definitions and invocations inside `Sequel.migration`.
+
+Example:
+
+```ruby
+Sequel.extension(:methods_in_migrations)
+
+Sequel.migration do
+  # define
+  def get_data
+    # ...some code...
+  end
+
+  # use
+  up { get_data }
+  down { get_data }
+
+  # without extension:
+  #   => NameError: undefined local variable or method `get_data' for #<Sequel::Postgres::Database>
+end
+```
+
 ## Duplicate
 
 Enable: `Sequel::Model.plugin :duplicate`
@@ -180,14 +207,14 @@ user.data # => {"first_name": "John"}
 
 Same as `DB#synchronize_with`
 
-Enable: 
+Enable:
 
 ```ruby
 DB.extension :synchronize
 Sequel::Model.plugin :synchronize
 ```
 
-Example: 
+Example:
 
 ```ruby
 user = User.first
