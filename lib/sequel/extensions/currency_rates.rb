@@ -7,6 +7,7 @@ module Sequel
     #
     # @param aliaz [Symbol] alias to be used for joined table
     # @param table [Symbol] table name to join to
+    # @param currency_column [Symbol] currency column by which table is joined
     # @param time_column [Symbol] time column by which table is joined
     #
     # @example
@@ -16,11 +17,12 @@ module Sequel
       aliaz = :currency_rates,
       table: table_name,
       rates_table: Sequel[:currency_rates],
+      currency_column: :currency,
       time_column: :created_at
     )
       table = Sequel[table]
       rates = Sequel[aliaz]
-      join_expr = table[:currency] =~ rates[:currency]
+      join_expr = table[currency_column] =~ rates[:currency]
       join_expr &= rates[:period].pg_range.contains(table[time_column])
       left_join(rates_table.as(aliaz), join_expr)
     end
