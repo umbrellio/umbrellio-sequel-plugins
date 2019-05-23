@@ -4,14 +4,17 @@ lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
+  gem_version = "0.3.0"
+  release_version = ENV["TRAVIS"] ? "#{gem_version}.#{ENV["TRAVIS_BUILD_NUMBER"]}" : gem_version
+
   spec.name = "umbrellio-sequel-plugins"
-  spec.version = "0.3.0"
+  spec.version = release_version
+  spec.required_ruby_version = ">= 2.4"
+
   spec.authors = ["nulldef"]
   spec.email = ["nulldefiner@gmail.com"]
-  spec.required_ruby_version = ">= 2.4"
   spec.homepage = "https://github.com/umbrellio/umbrellio-sequel-plugins"
   spec.licenses = ["MIT"]
-
   spec.summary = "Sequel plugins"
   spec.description = "Sequel plugins"
 
@@ -21,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "sequel"
   spec.add_runtime_dependency "symbiont-ruby", ">= 0.6"
 
+  spec.add_development_dependency "rubocop-config-umbrellio"
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "coveralls"
   spec.add_development_dependency "pg"
