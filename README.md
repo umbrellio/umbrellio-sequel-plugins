@@ -22,6 +22,7 @@ And then execute:
 - `Slave`
 - `Synchronize`
 - `methods_in_migrations`
+- [`connection_guard`](https://github.com/umbrellio/sequel-connection_guard)
 
 # Plugins
 
