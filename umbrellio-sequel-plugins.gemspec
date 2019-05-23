@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = ">= 2.4"
 
   spec.authors = ["nulldef"]
-  spec.email = ["nulldefiner@gmail.com"]
+  spec.email = ["nulldefiner@gmail.com", "oss@umbrellio.biz"]
   spec.homepage = "https://github.com/umbrellio/umbrellio-sequel-plugins"
   spec.licenses = ["MIT"]
   spec.summary = "Sequel plugins"
