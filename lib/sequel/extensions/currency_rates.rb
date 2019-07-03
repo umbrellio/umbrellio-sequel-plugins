@@ -7,8 +7,9 @@ module Sequel
     #
     # @param aliaz [Symbol] alias to be used for joined table
     # @param table [Symbol] table name to join to
-    # @param currency_column [Symbol] currency column by which table is joined
-    # @param time_column [Symbol] time column by which table is joined
+    # @param currency_column [Symbol or Sequel::SQL::Expression] currency column by which
+    #   table is joined
+    # @param time_column [Symbol or Sequel::SQL::Expression] time column by which table is joined
     #
     # @example
     #   Order::Model.with_rates.select(Sequel[:amount].in_usd)
@@ -22,8 +23,11 @@ module Sequel
     )
       table = Sequel[table]
       rates = Sequel[aliaz]
-      join_expr = table[currency_column] =~ rates[:currency]
-      join_expr &= rates[:period].pg_range.contains(table[time_column])
+
+      currency_expr = wrap_if_symbol(currency_column, table)
+      time_expr = wrap_if_symbol(time_column, table)
+
+      join_expr = (rates[:currency] =~ currency_expr) & rates[:period].pg_range.contains(time_expr)
       left_join(rates_table.as(aliaz), join_expr)
     end
 
@@ -32,6 +36,12 @@ module Sequel
     # @return [Symbol] table name
     def table_name
       respond_to?(:first_source_alias) ? first_source_alias : super
+    end
+
+    private
+
+    def wrap_if_symbol(column_name, table)
+      column_name.is_a?(Symbol) ? table[column_name] : column_name
     end
   end
 
