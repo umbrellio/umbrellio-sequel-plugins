@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
-::DB ||= Sequel.connect(ENV["DB_URL"] || "postgres://localhost/sequel_plugins")
+require "logger"
+
+DB = Sequel.connect(ENV["DB_URL"] || "postgres://localhost/sequel_plugins")
+DB.logger = Logger.new("log/db.log")
+
 Sequel::Model.db = DB
+
 DB.extension :pg_array
 DB.extension :pg_json
 DB.extension :pg_range
