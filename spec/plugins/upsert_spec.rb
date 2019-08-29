@@ -8,7 +8,7 @@ end
 
 UpsertModel = Sequel::Model(:upsert_test)
 UpsertModel.create(name: "name", value: 1)
-UpsertModel.create(name: "name2", value: 3)
+UpsertModel.create(name: "name2", value: nil)
 
 RSpec.describe "upsert" do
   it "updates existing record" do

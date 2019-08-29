@@ -11,13 +11,14 @@ module Sequel::Plugins::Upsert
     # @return [Sequel::Dataset] dataset
     def upsert_dataset(target: primary_key)
       cols = columns - Array(primary_key)
+
       update_spec = cols.map { |x| [x, Sequel[:excluded][x]] }
-      where_spec = cols.map { |x| [Sequel[table_name][x], Sequel[:excluded][x]] }
+      where_spec = cols.map { |x| Sequel::Plugins::Upsert.distinct_expr(table_name, x) }.reduce(:|)
 
       dataset.insert_conflict(
         target: target,
         update: update_spec,
-        update_where: Sequel.~(where_spec),
+        update_where: where_spec,
       )
     end
 
@@ -56,5 +57,9 @@ module Sequel::Plugins::Upsert
     def upsert_model
       @upsert_model ||= Sequel::Model(table_name)
     end
+  end
+
+  def self.distinct_expr(table_name, col)
+    Sequel.lit("? IS DISTINCT FROM ?", Sequel[table_name][col], Sequel[:excluded][col])
   end
 end
