@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] 2019-11-18
+### Added
+- `Sequel.extension(:deferrable_foreign_keys)` - makes foreign keys constraints deferrable by default;
+
 ## [0.3.2] 2018-07-03
 ### Added
 - Support sequel expessions in `with_rates`
