@@ -8,7 +8,7 @@ def create_table_with_foreign_key(name, fk_name, fk_reference, deferrable: true)
   end
 end
 
-def alter_table_with_foreign_key(name, fk_name, fk_reference, deferrable: true)
+def alter_table_add_foreign_key(name, fk_name, fk_reference, deferrable: true)
   if deferrable
     DB.alter_table(name) { add_foreign_key fk_name, fk_reference }
   else
@@ -58,8 +58,8 @@ RSpec.describe "deferrable_foreign_keys" do
 
   context "when table is altered" do
     before do
-      alter_table_with_foreign_key(:books, :publisher_id, :publishers, deferrable: deferrable)
-      alter_table_with_foreign_key(:journals, :publisher_id, :publishers, deferrable: deferrable)
+      alter_table_add_foreign_key(:books, :publisher_id, :publishers, deferrable: deferrable)
+      alter_table_add_foreign_key(:journals, :publisher_id, :publishers, deferrable: deferrable)
     end
 
     after do
