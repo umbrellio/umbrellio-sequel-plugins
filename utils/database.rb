@@ -16,6 +16,7 @@ DB.extension :pg_tools
 DB.extension :slave
 DB.extension :synchronize
 
+Sequel.extension :deferrable_foreign_keys
 Sequel.extension :migration
 Sequel.extension :pg_array_ops
 Sequel.extension :pg_json_ops
