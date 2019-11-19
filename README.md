@@ -163,9 +163,8 @@ DB.create_table(:items) do
   primary_key :id
   foreign_key :user_id, :users
 end
-
-# scheme:
-
+```
+```sql
 CREATE TABLE users (
   id integer NOT NULL
 );
@@ -173,10 +172,10 @@ CREATE TABLE items (
   id integer NOT NULL
 );
 
-# without extension:
+-- without extension:
 ALTER TABLE items ADD CONSTRAINT items_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
 
-# with extension:
+-- with extension:
 ALTER TABLE items ADD CONSTRAINT items_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED;
 ```
 
