@@ -22,6 +22,7 @@ And then execute:
 - `Slave`
 - `Synchronize`
 - `methods_in_migrations`
+- `deferrable_foreign_keys`
 
 # Plugins
 
@@ -146,6 +147,59 @@ Sequel.migration do
   # without extension:
   #   => NameError: undefined local variable or method `get_data' for #<Sequel::Postgres::Database>
 end
+```
+
+## Deferrable Foreign Keys
+
+Enable: `Sequel.extension(:deferrable_foreign_keys)`
+
+Makes foreign keys constraints deferrable (`DEFERABLE INITIALLY DEFERRED`) by default.
+
+Example:
+
+```ruby
+DB.create_table(:users) { primary_key :id }
+DB.create_table(:items) do
+  primary_key :id
+  foreign_key :user_id, :users
+end
+```
+```sql
+CREATE TABLE users (
+  id integer NOT NULL
+);
+CREATE TABLE items (
+  id integer NOT NULL
+);
+
+-- without extension:
+ALTER TABLE items ADD CONSTRAINT items_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+
+-- with extension:
+ALTER TABLE items ADD CONSTRAINT items_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) DEFERRABLE INITIALLY DEFERRED;
+```
+
+OR
+
+```ruby
+# wives attributes: id (pk), husband_id (fk)
+# husbands attributes: id (pk), wife_id (fk)
+ 
+Wife = Sequel::Model(:wives)
+Husband = Sequel::Model(:husbands)
+
+DB.transaction do
+  wife = Wife.create(id: 1, husband_id: 123456789)
+  husband = Husband.create(id: 1)
+  wife.update(husband_id: husband.id)
+  husband.update(wife_id: wife.id)
+end
+# assume there are no husband with id=123456789
+# without extension:
+#   => Sequel::ForeignKeyConstraintViolation: Key (husband_id)=(123456789) is not present in table "husbands".
+# with extension:
+#   => <Wife @attributes={id:1, husband_id: 1}>
+#   => <Husband @attributes={id:1, wife_id: 1}>
 ```
 
 ## Duplicate
