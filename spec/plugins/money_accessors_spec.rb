@@ -30,10 +30,10 @@ RSpec.describe Sequel::Plugins::MoneyAccessors do
   end
 
   it "allows setting amount to nil" do
-    order.set(amount: nil, billing_amount: Money.from_amount(25, "USD"))
+    order.set(amount: nil, billing_amount: Money.from_amount(25, "EUR"))
 
     expect(order.amount).to eq(nil)
-    expect(order.billing_amount).to eq(Money.new(2500, "USD"))
+    expect(order.billing_amount).to eq(Money.new(2500, "EUR"))
 
     expect(order.values).to eq(
       amount: nil,
