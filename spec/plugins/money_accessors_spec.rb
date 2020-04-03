@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe Sequel::Plugins::MoneyAccessors do
-  before do
-    DB.create_table(:test_orders) do
-      column :amount, "numeric"
-      column :currency, "text"
-      column :billing_amount, "float"
-      column :billing_currency, "text"
-    end
-  end
+DB.create_table(:test_orders) do
+  column :amount, "numeric"
+  column :currency, "text"
+  column :billing_amount, "float"
+  column :billing_currency, "text"
+end
 
+RSpec.describe Sequel::Plugins::MoneyAccessors do
   let(:order_model) do
     Class.new(Sequel::Model(:test_orders)) do
       money_accessor :amount, :currency
