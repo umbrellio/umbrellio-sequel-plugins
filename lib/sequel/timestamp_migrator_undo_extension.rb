@@ -23,7 +23,7 @@ module Sequel
         ds.filter(column => filename).delete
       end
 
-      elapsed = format("%<time>0.6f", time: Tim.now - time)
+      elapsed = format("%<time>0.6f", time: Time.now - time)
       db.log_info("Finished undoing migration #{filename}, took #{elapsed} seconds")
     end
 
