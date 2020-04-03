@@ -237,6 +237,24 @@ item.price # => #<Money fractional:5000.0 currency:USD>
 item.get_column_value(:amount) # => 0.5e2
 ```
 
+## MoneyAccessors
+
+Enable: `Sequel::Model.plugin :money_accessors`
+
+Plugin for using money field keys as model properties.
+
+Example:
+
+```ruby
+class Order < Sequel::Model
+  money_accessor :amount, :currency
+end
+
+order = Order.create(amount: 200, currency: "EUR")
+order.amount # => #<Money fractional:20000.0 currency:RUB>
+order.currency # => "EUR"
+```
+
 ## StoreAccessors
 
 Enable: `Sequel::Model.plugin :store_accessors`

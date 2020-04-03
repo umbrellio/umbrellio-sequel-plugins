@@ -22,6 +22,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "sequel"
+  spec.add_dependency "money"
   spec.add_runtime_dependency "symbiont-ruby", ">= 0.6"
 
   spec.add_development_dependency "bundler"
