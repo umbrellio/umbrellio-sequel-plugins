@@ -30,6 +30,8 @@ env:
   global:
   - PGPORT=5433
 
+cache: bundler
+
 before_install:
 - gem install bundler
 - sudo cp /etc/postgresql/9.6/main/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
