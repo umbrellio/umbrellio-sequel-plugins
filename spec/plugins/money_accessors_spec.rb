@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Sequel::Plugins::MoneyAccessors do
+RSpec.describe Sequel::Plugins::MoneyAccessors do
   before do
     DB.create_table(:test_orders) do
       column :amount, "numeric"
@@ -17,10 +17,10 @@ describe Sequel::Plugins::MoneyAccessors do
     end
   end
 
-  let(:order) { order_model.create(amount: Money[15, "USD"]) }
+  let(:order) { order_model.create(amount: Money.from_amount(15, "USD")) }
 
   it "stores column as Money instance" do
-    expect(order.amount).to eq_money(15, "USD")
+    expect(order.amount).to eq(Money.new(1500, "USD"))
     expect(order.billing_amount).to eq(nil)
 
     expect(order.values).to eq(
@@ -32,10 +32,10 @@ describe Sequel::Plugins::MoneyAccessors do
   end
 
   it "allows setting amount to nil" do
-    order.set(amount: nil, billing_amount: Money[25, "EUR"])
+    order.set(amount: nil, billing_amount: Money.from_amount(25, "USD"))
 
     expect(order.amount).to eq(nil)
-    expect(order.billing_amount).to eq_money(25, "EUR")
+    expect(order.billing_amount).to eq(Money.new(2500, "USD"))
 
     expect(order.values).to eq(
       amount: nil,

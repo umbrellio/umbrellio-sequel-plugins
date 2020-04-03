@@ -30,7 +30,7 @@ module Sequel::Plugins::MoneyAccessors
         define_method(amount_column) do
           amount, currency = super(), send(currency_column)
           return unless amount && currency
-          Money[amount.to_d, currency]
+          Money.from_amount(amount.to_d, currency)
         end
       end
     end

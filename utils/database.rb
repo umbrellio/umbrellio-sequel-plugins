@@ -24,6 +24,7 @@ Sequel.extension :pg_range_ops
 
 Sequel::Model.plugin :duplicate
 Sequel::Model.plugin :get_column_value
+Sequel::Model.plugin :money_accessors
 Sequel::Model.plugin :store_accessors
 Sequel::Model.plugin :synchronize
 Sequel::Model.plugin :upsert
