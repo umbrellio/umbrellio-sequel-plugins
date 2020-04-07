@@ -243,7 +243,9 @@ Enable: `Sequel::Model.plugin :money_accessors`
 
 Plugin for using money field keys as model properties.
 
-Example:
+Examples of usage:
+
+##### Money accessor
 
 ```ruby
 class Order < Sequel::Model
@@ -251,7 +253,34 @@ class Order < Sequel::Model
 end
 
 order = Order.create(amount: 200, currency: "EUR")
-order.amount # => #<Money fractional:20000.0 currency:RUB>
+order.amount # => #<Money fractional:20000.0 currency:EUR>
+order.currency # => "EUR"
+
+order.amount = Money.new(150, "RUB")
+order.amount # => #<Money fractional:150.0 currency:RUB>
+```
+
+##### Money setter
+
+```ruby
+class Order < Sequel::Model
+  money_setter :amount, :currency
+end
+
+order = Order.create(amount: 200, currency: "EUR")
+order.amount = Money.new(150, "RUB")
+order.currency # => "RUB"
+```
+
+##### Money getter
+
+```ruby
+class Order < Sequel::Model
+  money_getter :amount, :currency
+end
+
+order = Order.create(amount: 200, currency: "EUR")
+order.amount # => #<Money fractional:20000.0 currency:EUR>
 order.currency # => "EUR"
 ```
 
