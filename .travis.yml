@@ -1,25 +1,52 @@
 language: ruby
-matrix:
+
+os: linux
+dist: xenial
+
+jobs:
   fast_finish: true
   include:
-  - rvm: 2.4
   - rvm: 2.5
   - rvm: 2.6
+  - rvm: 2.7
   - rvm: ruby-head
   allow_failures:
   - rvm: ruby-head
-sudo: false
-cache: bundler
+
 services:
 - postgresql
+
 addons:
-  postgresql: 9.6
-before_install: gem install bundler
+  postgresql: 12
+  apt:
+    packages:
+    - postgresql-12
+    - postgresql-client-12
+    - postgresql-server-dev-12
+    - postgresql-client-common
+    - postgresql-common
+
+env:
+  global:
+  - PGPORT=5433
+
+cache: bundler
+
+before_install:
+- gem install bundler
+- sudo cp /etc/postgresql/9.6/main/pg_hba.conf /etc/postgresql/12/main/pg_hba.conf
+- sudo service postgresql restart 12
+- sleep 1
+
+install: bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}
+
 before_script:
 - psql -c 'create database sequel_plugins;' -U postgres
+
 script:
 - bundle exec rspec
 - bundle exec rubocop
+
 deploy:
   provider: rubygems
   api_key:
@@ -28,3 +55,4 @@ deploy:
   on:
     repo: umbrellio/umbrellio-sequel-plugins
     branch: master
+    rvm: 2.7

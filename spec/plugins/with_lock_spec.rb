@@ -20,10 +20,13 @@ RSpec.describe "with_lock" do
 
   it "updates the field" do
     count_before = locks_count
+
     model.with_lock do
-      expect(locks_count).to eq(count_before + 1)
+      expect(locks_count).to eq(count_before + 2)
       model.update(count: 1)
     end
+
     expect(locks_count).to eq(count_before)
+    expect(model.count).to eq(1)
   end
 end
