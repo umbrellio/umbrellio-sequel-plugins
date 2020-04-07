@@ -2,6 +2,8 @@
 
 require "money"
 
+Money.rounding_mode = BigDecimal::ROUND_HALF_UP
+
 # Creates accessors for money values
 module Sequel::Plugins::MoneyAccessors
   MoneyClassRequired = Class.new(StandardError)

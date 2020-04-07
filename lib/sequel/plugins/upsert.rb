@@ -39,7 +39,7 @@ module Sequel::Plugins::Upsert
     # @see #upsert_dataset
     def multi_upsert(rows, **options)
       rows = rows.map { |row| sequel_values(row) }
-      upsert_dataset(options).multi_insert(rows)
+      upsert_dataset(**options).multi_insert(rows)
     end
 
     # Returns formatted row values
