@@ -55,3 +55,4 @@ deploy:
   on:
     repo: umbrellio/umbrellio-sequel-plugins
     branch: master
+    rvm: 2.7
