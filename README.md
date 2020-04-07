@@ -239,9 +239,16 @@ item.get_column_value(:amount) # => 0.5e2
 
 ## MoneyAccessors
 
-Enable: `Sequel::Model.plugin :money_accessors`
+**Important:** requires `money` gem described above.
 
 Plugin for using money field keys as model properties.
+
+Enable:
+
+```ruby
+add_runtime_dependency "money"
+Sequel::Model.plugin :money_accessors
+````
 
 Examples of usage:
 
