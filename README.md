@@ -28,6 +28,7 @@ And then execute:
 
 - `Duplicate`
 - `GetColumnValue`
+- `MoneyAccessors`
 - `StoreAccessors`
 - `Synchronize`
 - `Upsert`
@@ -239,14 +240,14 @@ item.get_column_value(:amount) # => 0.5e2
 
 ## MoneyAccessors
 
-**Important:** requires `money` gem described above.
+**Important:** requires `money` gem described below.
 
 Plugin for using money field keys as model properties.
 
 Enable:
 
 ```ruby
-add_runtime_dependency "money"
+gem "money"
 Sequel::Model.plugin :money_accessors
 ````
 
@@ -311,7 +312,7 @@ user.data # => {"first_name": "John"}
 
 ## Synchronize
 
-**Important:** requires a `synchronize` extension described above.
+**Important:** requires a `synchronize` extension described below.
 
 Same as `DB#synchronize_with`
 
