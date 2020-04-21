@@ -3,9 +3,11 @@
 require "qonfig"
 
 module SequelPlugins
+  # :nocov:
   if defined?(::Rails)
     Engine = Class.new(::Rails::Engine)
   end
+  # :nocov:
 end
 
 module Umbrellio
