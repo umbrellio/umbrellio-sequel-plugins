@@ -37,6 +37,13 @@ And then execute:
 # Tools
 - `TimestampMigratorUndoExtension`
 
+
+## Configuration
+
+Global config: `Umbrellio::SequelPlugins.config` (works via [Qonfig](https://github.com/0exp/qonfig) gem);
+- `Umbrellio::SequelPlugins['extensions']` - global extensions config;
+- `Umbrellio::SequelPlugins['plugins']` - global plugins config;
+
 ## CurrencyRates
 
 Plugin for joining currency rates table to any other table and money exchange.
@@ -156,6 +163,10 @@ Enable: `Sequel.extension(:deferrable_foreign_keys)`
 
 Makes foreign keys constraints deferrable (`DEFERABLE INITIALLY DEFERRED`) by default.
 
+Configurable options:
+
+- `"extensions.deferrable_foreign_keys.by_default"` - makes all foreign keys globally deferrable (or not) (`true` by default);
+
 Example:
 
 ```ruby
@@ -185,7 +196,7 @@ OR
 ```ruby
 # wives attributes: id (pk), husband_id (fk)
 # husbands attributes: id (pk), wife_id (fk)
- 
+
 Wife = Sequel::Model(:wives)
 Husband = Sequel::Model(:husbands)
 

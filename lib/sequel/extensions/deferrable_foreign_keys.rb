@@ -3,7 +3,8 @@
 module Sequel
   module CreateTableDefaultDeferrable
     def foreign_key(name, table = nil, opts = nil)
-      patch = { deferrable: true }
+      deferrable = ::Umbrellio::SequelPlugins["extensions.deferrable_foreign_keys.by_default"]
+      patch = { deferrable: deferrable }
       opts = opts.nil? ? patch : patch.merge(opts)
       super(name, table, opts)
     end
@@ -11,7 +12,8 @@ module Sequel
 
   module AlterTableDefaultDeferrable
     def add_foreign_key(name, table, opts = nil)
-      patch = { deferrable: true }
+      deferrable = ::Umbrellio::SequelPlugins["extensions.deferrable_foreign_keys.by_default"]
+      patch = { deferrable: deferrable }
       opts = opts.nil? ? patch : patch.merge(opts)
       super(name, table, opts)
     end
