@@ -302,7 +302,7 @@ Example:
 
 ```ruby
 class User < Sequel::Model
-   store :data, :first_name
+  store :data, :first_name
 end
 
 user = User.create(first_name: "John")
@@ -354,7 +354,7 @@ Example:
 ```ruby
 user = User.first
 user.with_lock do
-    user.update(name: "James")
+  user.update(name: "James")
 end
 ```
 
