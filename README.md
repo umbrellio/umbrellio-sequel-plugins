@@ -13,30 +13,30 @@ gem 'umbrellio-sequel-plugins'
 
 And then execute:
 
-    $ bundle
+$ bundle
 
 # Extensions
 
-- `CurrencyRates`
-- `PGTools`
-- `Slave`
-- `Synchronize`
-- `methods_in_migrations`
-- `deferrable_foreign_keys`
+- [`CurrencyRates`](#CurrencyRates)
+- [`PGTools`](#PGTools)
+- [`Slave`](#Slave)
+- [`Synchronize`](#Synchronize)
+- [`methods_in_migrations`](#methods_in_migrations)
+- [`deferrable_foreign_keys`](#deferrable_foreign_keys)
 
 # Plugins
 
-- `AttrEncrypted`
-- `Duplicate`
-- `GetColumnValue`
-- `MoneyAccessors`
-- `StoreAccessors`
-- `Synchronize`
-- `Upsert`
-- `WithLock`
+- [`AttrEncrypted`](#AttrEncrypted)
+- [`Duplicate`](#Duplicate)
+- [`GetColumnValue`](#GetColumnValue)
+- [`MoneyAccessors`](#MoneyAccessors)
+- [`StoreAccessors`](#StoreAccessors)
+- [`Synchronize`](#Synchronize)
+- [`Upsert`](#Upsert)
+- [`WithLock`](#WithLock)
 
 # Tools
-- `TimestampMigratorUndoExtension`
+- [`TimestampMigratorUndoExtension`](#TimestampMigratorUndoExtension)
 
 ## CurrencyRates
 
