@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "base64"
-
 # Creates encrypted attribute storing
 module Sequel::Plugins::AttrEncrypted
   SEPARATOR = "$"
@@ -27,6 +25,10 @@ module Sequel::Plugins::AttrEncrypted
     #     attr_encrypted :first_name, :last_name, key: Settings.private_key
     #     attr_encrypted :secret_data, key: Settings.another_private_key, json: true
     #   end
+
+    #   Order.create(first_name: "Ivan")
+    #   # => INSERT INTO "orders" ("encrypted_first_name")
+    #               VALUES ('/sTi9Q==$OTpuMRq5k8R3JayQ$WjSManQGP9UaZ3C40yDjKg==')
     #
     #   order = Order.create(first_name: "Ivan", last_name: "Smith",
     #                        secret_data: { "some_key" => "Some Value" })
@@ -48,7 +50,7 @@ module Sequel::Plugins::AttrEncrypted
         define_method("#{attr}=") do |value|
           instance_variable_set("@#{attr}", value)
 
-          send("encrypted_#{attr}=", encrypt(json ? value.to_json : value, key))
+          send("encrypted_#{attr}=", SimpleCrypt.encrypt(json ? value.to_json : value, key))
         end
       end
     end
@@ -57,7 +59,7 @@ module Sequel::Plugins::AttrEncrypted
       @_attr_encrypted_module.module_eval do
         define_method(attr.to_s) do
           instance_variable_get("@#{attr}") || begin
-            decrypted = decrypt(send("encrypted_#{attr}"), key)
+            decrypted = SimpleCrypt.decrypt(send("encrypted_#{attr}"), key)
 
             result = json && !decrypted.nil? ? JSON.parse(decrypted) : decrypted
             instance_variable_set("@#{attr}", result)
@@ -71,47 +73,6 @@ module Sequel::Plugins::AttrEncrypted
 
       @_attr_encrypted_module = Module.new
       prepend @_attr_encrypted_module
-    end
-  end
-
-  module InstanceMethods
-    private
-
-    def encrypt(string, key)
-      return unless string.is_a?(String) && !string.empty?
-
-      encryptor = new_cipher
-      encryptor.encrypt
-      encryptor.key = key
-      iv = encryptor.random_iv
-
-      encrypted = encryptor.update(string) + encryptor.final
-      dump(encrypted, iv, encryptor.auth_tag)
-    end
-
-    def decrypt(string, key)
-      encrypted, iv, auth_tag = parse(string) if string.is_a?(String)
-      return if [encrypted, iv, auth_tag].any?(&:nil?)
-
-      decryptor = new_cipher
-      decryptor.decrypt
-      decryptor.key = key
-      decryptor.iv = iv
-      decryptor.auth_tag = auth_tag
-
-      decryptor.update(encrypted) + decryptor.final
-    end
-
-    def new_cipher
-      OpenSSL::Cipher::AES256.new(:gcm)
-    end
-
-    def parse(string)
-      string.split(SEPARATOR).map { |x| Base64.strict_decode64(x) }
-    end
-
-    def dump(*values)
-      [*values].map { |x| Base64.strict_encode64(x) }.join(SEPARATOR)
     end
   end
 end
