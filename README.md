@@ -26,6 +26,7 @@ And then execute:
 
 # Plugins
 
+- `AttrEncrypted`
 - `Duplicate`
 - `GetColumnValue`
 - `MoneyAccessors`
@@ -201,6 +202,40 @@ end
 # with extension:
 #   => <Wife @attributes={id:1, husband_id: 1}>
 #   => <Husband @attributes={id:1, wife_id: 1}>
+```
+
+## AttrEncrypted
+
+Enable: `Sequel::Model.plugin :attr_encrypted`
+
+Plugin for storing encrypted model attributes.
+
+Example:
+
+```ruby
+Sequel.migration do
+  change do
+    alter_table :orders do
+      add_column :encrypted_first_name, :text
+      add_column :encrypted_last_name, :text
+      add_column :encrypted_secret_data, :text
+    end
+  end
+end
+
+class Order < Sequel::Model
+  attr_encrypted :first_name, :last_name, key: Settings.private_key
+  attr_encrypted :secret_data, key: Settings.another_private_key, json: true
+end
+
+Order.create(first_name: "Ivan")
+# => INSERT INTO "orders" ("encrypted_first_name") VALUES ('/sTi9Q==$OTpuMRq5k8R3JayQ$WjSManQGP9UaZ3C40yDjKg==')
+
+order = Order.create(first_name: "Ivan", last_name: "Smith",
+                      secret_data: { "some_key" => "Some Value" })
+order.reload
+order.first_name # => "Ivan"
+order.secret_data # => { "some_key" => "Some Value" }
 ```
 
 ## Duplicate
