@@ -41,6 +41,7 @@ module Sequel::Plugins::AttrEncrypted
       attrs.each do |attr|
         define_encrypted_setter(attr, key, json)
         define_encrypted_getter(attr, key, json)
+        @_encrypted_attributes << attr
       end
     end
 
@@ -73,8 +74,19 @@ module Sequel::Plugins::AttrEncrypted
     def include_encrypted_module!
       return if defined?(@_attr_encrypted_module)
 
+      @_encrypted_attributes = []
       @_attr_encrypted_module = Module.new
       prepend @_attr_encrypted_module
+    end
+  end
+
+  module InstanceMethods
+    def reload
+      self.class.instance_variable_get(:@_encrypted_attributes).each do |attr|
+        instance_variable_set("@#{attr}", nil)
+      end
+
+      super
     end
   end
 end
