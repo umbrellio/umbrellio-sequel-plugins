@@ -3,6 +3,7 @@
 # Creates encrypted attribute storing
 module Sequel::Plugins::AttrEncrypted
   SEPARATOR = "$"
+  require "sequel/plugins/attr_encrypted/simple_crypt"
 
   module ClassMethods
     # Setup attr encrypted
@@ -50,7 +51,8 @@ module Sequel::Plugins::AttrEncrypted
         define_method("#{attr}=") do |value|
           instance_variable_set("@#{attr}", value)
 
-          send("encrypted_#{attr}=", SimpleCrypt.encrypt(json ? value.to_json : value, key))
+          prepared = json ? value.to_json : value
+          send("encrypted_#{attr}=", SimpleCrypt.encrypt(prepared, key))
         end
       end
     end
