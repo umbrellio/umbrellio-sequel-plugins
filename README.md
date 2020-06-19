@@ -21,8 +21,8 @@ $ bundle
 - [`PGTools`](#PGTools)
 - [`Slave`](#Slave)
 - [`Synchronize`](#Synchronize)
-- [`methods_in_migrations`](#methods_in_migrations)
-- [`deferrable_foreign_keys`](#deferrable_foreign_keys)
+- [`methods_in_migrations`](#Methods-in-Migrations)
+- [`deferrable_foreign_keys`](#Deferrable-Foreign-Keys)
 
 # Plugins
 
