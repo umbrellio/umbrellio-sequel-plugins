@@ -225,7 +225,7 @@ end
 
 class Order < Sequel::Model
   attr_encrypted :first_name, :last_name, key: Settings.private_key
-  attr_encrypted :secret_data, key: Settings.another_private_key, json: true
+  attr_encrypted :secret_data, key: Settings.another_private_key
 end
 
 Order.create(first_name: "Ivan")
