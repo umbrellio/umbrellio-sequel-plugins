@@ -16,6 +16,7 @@ require "bundler/setup"
 require "sequel"
 require "pry"
 require_relative "../utils/database"
+require_relative "../lib/umbrellio-sequel-plugins"
 
 Dir["#{__dir__}/../lib/sequel/**/*.rb"].sort.each { |f| require f }
 
