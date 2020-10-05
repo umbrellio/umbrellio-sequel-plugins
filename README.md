@@ -233,7 +233,6 @@ Order.create(first_name: "Ivan")
 
 order = Order.create(first_name: "Ivan", last_name: "Smith",
                       secret_data: { "some_key" => "Some Value" })
-order.reload
 order.first_name # => "Ivan"
 order.secret_data # => { "some_key" => "Some Value" }
 ```
