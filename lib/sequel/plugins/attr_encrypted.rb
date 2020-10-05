@@ -79,17 +79,17 @@ module Sequel::Plugins::AttrEncrypted
   end
 
   module InstanceMethods
-    def save(...)
-      super(...).tap { _reset_encrypted_attributes_ivars }
+    def save(*args, **kwargs, &block)
+      super(*args, **kwargs, &block).tap { _reset_encrypted_attrs_ivars }
     end
 
-    def reload(...)
-      super(...).tap { _reset_encrypted_attributes_ivars }
+    def reload(*args, **kwargs, &block)
+      super(*args, **kwargs, &block).tap { _reset_encrypted_attrs_ivars }
     end
 
     private
 
-    def _reset_encrypted_attributes_ivars
+    def _reset_encrypted_attrs_ivars
       self.class.instance_variable_get(:@_encrypted_attributes)&.each do |attr|
         instance_variable_set("@#{attr}", nil)
       end
