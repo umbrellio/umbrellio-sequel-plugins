@@ -83,7 +83,7 @@ module Sequel::Plugins::AttrEncrypted
       super(*args, **kwargs, &block).tap { _reset_encrypted_attrs_ivars }
     end
 
-    def reload(*args, **kwargs, &block)
+    def refresh(*args, **kwargs, &block)
       super(*args, **kwargs, &block).tap { _reset_encrypted_attrs_ivars }
     end
 
