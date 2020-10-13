@@ -32,7 +32,6 @@ module Sequel::Plugins::AttrEncrypted
     #
     #   order = Order.create(first_name: "Ivan", last_name: "Smith",
     #                        secret_data: { "some_key" => "Some Value" })
-    #   order.reload
     #   order.first_name # => "Ivan"
     #   order.last_name # => "Smith"
     #   order.secret_data # => { "some_key" => "Some Value" }
@@ -80,12 +79,20 @@ module Sequel::Plugins::AttrEncrypted
   end
 
   module InstanceMethods
-    def reload
+    def save(*)
+      super.tap { _reset_encrypted_attrs_ivars }
+    end
+
+    def refresh(*)
+      super.tap { _reset_encrypted_attrs_ivars }
+    end
+
+    private
+
+    def _reset_encrypted_attrs_ivars
       self.class.instance_variable_get(:@_encrypted_attributes)&.each do |attr|
         instance_variable_set("@#{attr}", nil)
       end
-
-      super
     end
   end
 end
