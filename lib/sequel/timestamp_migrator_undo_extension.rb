@@ -8,10 +8,10 @@ module Sequel
     # Rollback a migration
     def undo(version)
       path = files.find { |file| migration_version_from_file(get_filename(file)) == version }
-      raise "Migration #{version} does not exist in the filesystem" unless path
+      error!("Migration #{version} does not exist in the filesystem") unless path
 
       filename = get_filename(path)
-      raise "Migration #{version} is not applied" unless applied_migrations.include?(filename)
+      error!("Migration #{version} is not applied") unless applied_migrations.include?(filename)
 
       migration = get_migration(path)
 
@@ -41,7 +41,7 @@ module Sequel
       end
     end
 
-    Sequel::TimestampMigrator.prepend TimestampMigratorLogger
+    Sequel::TimestampMigrator.prepend(TimestampMigratorLogger)
 
     private
 
@@ -56,6 +56,10 @@ module Sequel
 
     def get_filename(path)
       File.basename(path).downcase
+    end
+
+    def error!(message)
+      raise Sequel::Migrator::Error, message
     end
   end
 end

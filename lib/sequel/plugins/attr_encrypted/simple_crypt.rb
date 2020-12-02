@@ -30,7 +30,7 @@ module Sequel::Plugins::AttrEncrypted::SimpleCrypt
   private
 
   def new_cipher(key)
-    result = OpenSSL::Cipher::AES256.new(:gcm)
+    result = OpenSSL::Cipher.new("aes-256-gcm")
     yield(result)
     result.key = key
     result
@@ -41,6 +41,6 @@ module Sequel::Plugins::AttrEncrypted::SimpleCrypt
   end
 
   def dump(*values)
-    [*values].map { |x| Base64.strict_encode64(x) }.join(SEPARATOR)
+    Array(values).map { |x| Base64.strict_encode64(x) }.join(SEPARATOR)
   end
 end

@@ -20,8 +20,10 @@ RSpec.describe Sequel::Plugins::AttrEncrypted do
   let(:secret_attrs) { %i[name secret_data] }
 
   it "stores only encrypted attributes" do
-    secret_attrs.each { |attr| expect(order[attr]).to be(nil) }
-    secret_attrs.each { |attr| expect(order[:"encrypted_#{attr}"]).not_to be_empty }
+    secret_attrs.each do |attr|
+      expect(order[attr]).to be(nil)
+      expect(order[:"encrypted_#{attr}"]).not_to be_empty
+    end
   end
 
   it "encrypts and decrypts attributes correctly" do
