@@ -14,7 +14,7 @@ RSpec.describe "with_lock" do
     DB[:pg_locks]
       .join(:pg_stat_activity, Sequel[:pg_locks][:pid] =~ Sequel[:pg_stat_activity][:pid])
       .where(mode: "RowShareLock")
-      .where(Sequel[:query] =~ /lock_test_model/)
+      .where(Sequel[:query] =~ /lock_test_model/) # rubocop:disable Performance/StringInclude
       .count
   end
 

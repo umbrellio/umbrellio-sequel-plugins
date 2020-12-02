@@ -44,8 +44,7 @@ before_script:
 - psql -c 'create database sequel_plugins;' -U postgres
 
 script:
-- bundle exec rspec
-- bundle exec rubocop
+- bundle exec rake
 
 deploy:
   provider: rubygems
