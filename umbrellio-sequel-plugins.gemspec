@@ -22,10 +22,10 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "sequel"
-  spec.add_runtime_dependency "symbiont-ruby", ">= 0.6"
+  spec.add_runtime_dependency "symbiont-ruby"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "coveralls", ">= 0.8"
+  spec.add_development_dependency "coveralls"
   spec.add_development_dependency "money"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "pry"

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "securerandom"
+
 RSpec.describe Sequel::Plugins::AttrEncrypted::SimpleCrypt do
   let(:secret_key) { SecureRandom.random_bytes(32) }
 
