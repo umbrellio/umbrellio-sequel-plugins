@@ -25,7 +25,6 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "symbiont-ruby"
 
   spec.add_development_dependency "bundler"
-  spec.add_development_dependency "coveralls"
   spec.add_development_dependency "money"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "pry"
@@ -33,4 +32,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rubocop-config-umbrellio"
   spec.add_development_dependency "simplecov"
+  spec.add_development_dependency "simplecov-lcov"
 end
