@@ -4,11 +4,11 @@ lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  gem_version = "0.4.0"
-  release_version = ENV["TRAVIS"] ? "#{gem_version}.#{ENV["TRAVIS_BUILD_NUMBER"]}" : gem_version
+  gem_version = "0.5.0"
+  release_version = "#{gem_version}.#{ENV["GITHUB_RUN_NUMBER"]}" if ENV["GITHUB_ACTIONS"]
 
   spec.name = "umbrellio-sequel-plugins"
-  spec.version = release_version
+  spec.version = gem_version || release_version
   spec.required_ruby_version = ">= 2.4"
 
   spec.authors = ["nulldef"]
@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/umbrellio/umbrellio-sequel-plugins"
   spec.licenses = ["MIT"]
   spec.summary = "Sequel plugins"
-  spec.description = "Sequel plugins"
+  spec.description = "A colletion of sequel plugins by Umbrellio"
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ["lib"]

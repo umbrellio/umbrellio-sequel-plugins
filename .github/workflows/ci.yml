@@ -48,3 +48,18 @@ jobs:
     - uses: coverallsapp/github-action@v1.1.2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: Deploy
+
+    # Run on push to master branch
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: umbrellio/publish-ruby-gem-action@v1
+        with:
+          api-key: ${{secrets.RUBYGEMS_API_KEY}}
