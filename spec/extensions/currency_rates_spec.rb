@@ -35,7 +35,7 @@ RSpec.describe "currency_rates" do
     DB[:items].with_rates(**options).select(Sequel[:price].in_usd.as(:price)).order(:price)
   end
 
-  let(:options) { Hash[] }
+  let(:options) { {} }
 
   specify do
     expect(items.first).to eq(price: 15)
@@ -43,7 +43,7 @@ RSpec.describe "currency_rates" do
   end
 
   context "with symbol in time_column param" do
-    let(:options) { Hash[time_column: :updated_at] }
+    let(:options) { { time_column: :updated_at } }
 
     specify do
       expect(items.first).to eq(price: 15)
@@ -52,7 +52,7 @@ RSpec.describe "currency_rates" do
   end
 
   context "with expression in time_column param" do
-    let(:options) { Hash[time_column: Sequel[:items][:updated_at]] }
+    let(:options) { { time_column: Sequel[:items][:updated_at] } }
 
     specify do
       expect(items.first).to eq(price: 15)

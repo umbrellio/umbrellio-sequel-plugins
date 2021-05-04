@@ -62,7 +62,7 @@ module Sequel::Plugins::AttrEncrypted
           instance_variable_get("@#{attr}") || begin
             decrypted = SimpleCrypt.decrypt(send("encrypted_#{attr}"), key)
 
-            result = !decrypted.nil? ? JSON.parse(decrypted) : decrypted
+            result = decrypted.nil? ? decrypted : JSON.parse(decrypted)
             instance_variable_set("@#{attr}", result)
           end
         end
