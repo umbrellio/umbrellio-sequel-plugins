@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    umbrellio-sequel-plugins (0.5.0)
+    umbrellio-sequel-plugins (0.5.1)
       sequel
       symbiont-ruby
 
@@ -83,7 +83,7 @@ GEM
     rubocop-sequel (0.2.0)
       rubocop (~> 1.0)
     ruby-progressbar (1.11.0)
-    sequel (5.42.0)
+    sequel (5.45.0)
     simplecov (0.21.2)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -113,4 +113,4 @@ DEPENDENCIES
   umbrellio-sequel-plugins!
 
 BUNDLED WITH
-   2.2.11
+   2.2.17
