@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   release_version = "#{gem_version}.#{ENV["GITHUB_RUN_NUMBER"]}" if ENV["GITHUB_ACTIONS"]
 
   spec.name = "umbrellio-sequel-plugins"
-  spec.version = gem_version || release_version
+  spec.version = release_version || gem_version
   spec.required_ruby_version = ">= 2.4"
 
   spec.authors = ["nulldef"]
