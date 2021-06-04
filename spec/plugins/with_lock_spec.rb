@@ -44,14 +44,14 @@ RSpec.describe "with_lock" do
         end
       end
 
-      subject { model.reload.count }
+      subject(:field) { model.reload.count }
 
       context "with savepoint" do
         let(:savepoint) { true }
 
         it "rollbacks changes" do
           update_model!
-          expect(subject).to eq(0)
+          expect(field).to eq(0)
         end
       end
 
@@ -60,7 +60,7 @@ RSpec.describe "with_lock" do
 
         it "doesn't rollback changes" do
           update_model!
-          expect(subject).to eq(1)
+          expect(field).to eq(1)
         end
       end
     end
