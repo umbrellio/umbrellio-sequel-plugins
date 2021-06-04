@@ -32,7 +32,7 @@ RSpec.describe "with_lock" do
 
   describe "field when error occurs" do
     context "with outer transaction" do
-      def field_with_outer_transaction
+      def update_model!
         DB.transaction do
           begin
             model.with_lock(savepoint: savepoint) do
@@ -42,15 +42,16 @@ RSpec.describe "with_lock" do
           rescue
           end
         end
-
-        model.reload.count
       end
+
+      subject { model.reload.count }
 
       context "with savepoint" do
         let(:savepoint) { true }
 
         it "rollbacks changes" do
-          expect(field_with_outer_transaction).to eq(0)
+          update_model!
+          expect(subject).to eq(0)
         end
       end
 
@@ -58,7 +59,8 @@ RSpec.describe "with_lock" do
         let(:savepoint) { false }
 
         it "doesn't rollback changes" do
-          expect(field_with_outer_transaction).to eq(1)
+          update_model!
+          expect(subject).to eq(1)
         end
       end
     end
