@@ -62,6 +62,6 @@ jobs:
 
       - uses: umbrellio/publish-ruby-gem-action@v1.0.2
         with:
-          api-key: ${{secrets.RUBYGEMS_API_KEY}}
+          api-key: ${{ secrets.RUBYGEMS_API_KEY }}
         env:
-          RELEASE_VERSION: ${{ env.GITHUB_RUN_NUMBER }}
+          PUBLISH_JOB: true
