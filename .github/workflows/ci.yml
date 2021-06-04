@@ -60,6 +60,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: umbrellio/publish-ruby-gem-action@v1
+      - uses: umbrellio/publish-ruby-gem-action@v1.0.2
         with:
           api-key: ${{secrets.RUBYGEMS_API_KEY}}
+        env:
+          RELEASE_VERSION: ${{ env.GITHUB_RUN_NUMBER }}
