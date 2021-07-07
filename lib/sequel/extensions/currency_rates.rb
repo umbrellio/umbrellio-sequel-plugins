@@ -50,12 +50,13 @@ module Sequel
     #
     # @param currency [String] currency
     # @param rates_table [Symbol] rates table name
+    # @param rates_column [Symbol] rates column name
     #
     # @example
-    #   Sequel[:amount].exchange_to("EUR", :order_rates)
+    #   Sequel[:amount].exchange_to("EUR", :order_rates, :courses)
     # @return [Sequel::SQL::NumericExpression]
-    def exchange_to(currency, rates_table = :currency_rates)
-      rate = Sequel[rates_table][:rates].pg_jsonb.get_text(currency).cast_numeric(Float)
+    def exchange_to(currency, rates_table = :currency_rates, rates_column = :rates)
+      rate = Sequel[rates_table][rates_column].pg_jsonb.get_text(currency).cast_numeric(Float)
       self * rate
     end
 
