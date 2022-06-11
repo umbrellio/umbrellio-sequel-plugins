@@ -11,7 +11,7 @@ module Sequel::Plugins::WithLock
 
       begin
         db.transaction(savepoint: savepoint) do
-          lock!
+          lock!("FOR NO KEY UPDATE")
           yield
         end
       ensure

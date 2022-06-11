@@ -20,6 +20,7 @@ RSpec.describe "with_lock" do
 
   it "updates the field" do
     count_before = locks_count
+    expect(model).to receive(:lock!).with("FOR NO KEY UPDATE").and_call_original
 
     model.with_lock do
       expect(locks_count).to eq(count_before + 2)
