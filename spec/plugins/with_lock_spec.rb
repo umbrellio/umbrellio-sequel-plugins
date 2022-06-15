@@ -20,7 +20,7 @@ RSpec.describe "with_lock" do
 
   it "updates the field" do
     count_before = locks_count
-    expect(model).to receive(:lock!).with("FOR NO KEY UPDATE").and_call_original
+    expect(model).to receive(:lock!).with("FOR NO KEY UPDATE").once.and_call_original
 
     model.with_lock do
       expect(locks_count).to eq(count_before + 2)
@@ -29,6 +29,13 @@ RSpec.describe "with_lock" do
 
     expect(locks_count).to eq(count_before)
     expect(model.count).to eq(1)
+  end
+
+  context "with another lock mode" do
+    it "calls #lock! with specified mode" do
+      expect(model).to receive(:lock!).with("FOR UPDATE").once
+      model.with_lock("FOR UPDATE") { nil }
+    end
   end
 
   describe "field when error occurs" do

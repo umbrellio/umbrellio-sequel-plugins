@@ -5,13 +5,13 @@ module Sequel::Plugins::WithLock
     # Execute block with lock
     #
     # @yield
-    def with_lock(savepoint: true)
+    def with_lock(mode = "FOR NO KEY UPDATE", savepoint: true)
       return yield if @__locked
       @__locked = true
 
       begin
         db.transaction(savepoint: savepoint) do
-          lock!("FOR NO KEY UPDATE")
+          lock!(mode)
           yield
         end
       ensure
