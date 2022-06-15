@@ -4,7 +4,7 @@ lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  gem_version = "0.5.1"
+  gem_version = "0.6.0"
   release_version = "#{gem_version}.#{ENV["GITHUB_RUN_NUMBER"]}" if ENV["PUBLISH_JOB"]
 
   spec.name = "umbrellio-sequel-plugins"
