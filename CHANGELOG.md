@@ -1,6 +1,5 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-FOR NO KEY UPDATE
 
 ## [0.7.0] 2022-06-24
 ### Added
@@ -9,7 +8,7 @@ FOR NO KEY UPDATE
 
 ## [0.6.0] 2022-06-15
 ### Added
-- `mode` param for `Sequel::Model.plugin(:with_lock)`;
+- `mode` param for `Sequel::Model.plugin(:with_lock)`, defaults to `FOR NO KEY UPDATE`;
 
 ## [0.5.0] 2020-06-06
 ### Added
