@@ -1,5 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+FOR NO KEY UPDATE
+
+## [0.7.0] 2022-06-24
+### Added
+- `DB.extension(:statement_timeout)` - allows to set transaction local statement_timeout;
+- Support of transaction options via `transaction_options` in migrations;
+
+## [0.6.0] 2022-06-15
+### Added
+- `mode` param for `Sequel::Model.plugin(:with_lock)`;
+
+## [0.5.0] 2020-06-06
+### Added
+- `Sequel::Model.plugin(:attr_encrypted)` - encrypts to model attributes;
 
 ## [0.4.0] 2019-11-18
 ### Added
@@ -7,7 +21,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.3.2] 2018-07-03
 ### Added
-- Support sequel expessions in `with_rates`
+- Support sequel expressions in `with_rates`;
 
 ## [0.3.0] 2018-04-24
 ### Added
