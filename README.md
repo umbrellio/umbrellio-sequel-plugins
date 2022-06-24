@@ -23,7 +23,7 @@ $ bundle
 - [`Synchronize`](#Synchronize)
 - [`Methods in Migrations`](#Methods-in-Migrations)
 - [`Deferrable Foreign Keys`](#Deferrable-Foreign-Keys)
-- [`Statement Timeout`](#Statement-Timeout)
+- [`Set Local`](#Set-Local)
 - [`Migration Transaction Options`](#Migration-Transaction-Options)
 
 # Plugins
@@ -207,7 +207,7 @@ end
 ```
 
 
-## Statement Timout
+## Set Local
 
 Enable: `DB.extension(:set_local)`
 
