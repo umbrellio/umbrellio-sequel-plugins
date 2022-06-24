@@ -209,17 +209,18 @@ end
 
 ## Statement Timout
 
-Enable: `DB.extension(:statement_timeout)`
+Enable: `DB.extension(:set_local)`
 
-Makes possible to set transaction local `statement_timeout`.
+Makes possible to set transaction locals.
 
 Example:
 
 ```ruby
-DB.transaction(statement_timeout: "5s") {}
+DB.transaction(set_local: { lock_timeout: "5s", statement_timeout: "5s" }) {}
 ```
 ```sql
 BEGIN;
+SET LOCAL lock_timeout = '5s';
 SET LOCAL statement_timeout = '5s';
 COMMIT;
 ```

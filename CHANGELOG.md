@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [0.7.0] 2022-06-24
 ### Added
-- `DB.extension(:statement_timeout)` - allows to set transaction local statement_timeout;
+- `DB.extension(:set_local)` - allows to set transaction locals;
 - Support of transaction options via `transaction_options` in migrations;
 
 ## [0.6.0] 2022-06-15

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe "statement_timeout" do
+RSpec.describe "set_local" do
   def run!
-    DB.transaction(statement_timeout: "1s") do
+    DB.transaction(set_local: { statement_timeout: "1s" }) do
       DB.execute("SELECT pg_sleep(2)")
     end
   end
