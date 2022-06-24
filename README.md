@@ -23,6 +23,8 @@ $ bundle
 - [`Synchronize`](#Synchronize)
 - [`Methods in Migrations`](#Methods-in-Migrations)
 - [`Deferrable Foreign Keys`](#Deferrable-Foreign-Keys)
+- [`Set Local`](#Set-Local)
+- [`Migration Transaction Options`](#Migration-Transaction-Options)
 
 # Plugins
 
@@ -202,6 +204,47 @@ end
 # with extension:
 #   => <Wife @attributes={id:1, husband_id: 1}>
 #   => <Husband @attributes={id:1, wife_id: 1}>
+```
+
+
+## Set Local
+
+Enable: `DB.extension(:set_local)`
+
+Makes possible to set transaction locals.
+
+Example:
+
+```ruby
+DB.transaction(set_local: { lock_timeout: "5s", statement_timeout: "5s" }) {}
+```
+```sql
+BEGIN;
+SET LOCAL lock_timeout = '5s';
+SET LOCAL statement_timeout = '5s';
+COMMIT;
+```
+
+
+## Migration Transaction Options
+
+Enable: `Sequel.extension(:migration_transaction_options)`
+
+Makes possible to pass `transaction_options` in migrations.
+
+Example:
+
+```ruby
+Sequel.migration do
+  transaction_options rollback: :always
+  
+  up { DB.select("1") }
+end
+```
+```sql
+BEGIN;
+SELECT '1';
+ROLLBACK;
 ```
 
 ## AttrEncrypted

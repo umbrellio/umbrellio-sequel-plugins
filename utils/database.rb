@@ -14,6 +14,7 @@ DB.extension :pg_range
 DB.extension :currency_rates
 DB.extension :pg_tools
 DB.extension :slave
+DB.extension :set_local
 DB.extension :synchronize
 
 Sequel.extension :deferrable_foreign_keys
