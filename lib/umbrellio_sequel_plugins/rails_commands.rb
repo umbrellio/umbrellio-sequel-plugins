@@ -7,7 +7,7 @@ module SequelPlugins
   class Rails::Command::DbconsoleCommand < Rails::Command::Base
     def perform
       require "rake"
-      Rake.with_application(&:load_rakefile)
+      Rake.with_application(&:load_rakefile) # Needed to initialize Rails.application
       SequelPlugins::RailsCommands.run_console!
     end
   end
