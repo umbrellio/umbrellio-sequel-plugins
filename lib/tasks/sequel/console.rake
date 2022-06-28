@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-namespace :sequel do
+namespace :db do
   task :console do
     rails_db_config = Rails.application.config.database_configuration
 
@@ -26,4 +26,8 @@ namespace :sequel do
       abort "Unsupported storage adapter: #{storage.class.inspect}"
     end
   end
+end
+
+task :db do
+  Rake.application["db:console"].invoke
 end
