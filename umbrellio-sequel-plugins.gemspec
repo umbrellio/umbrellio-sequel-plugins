@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.name = "umbrellio-sequel-plugins"
   spec.version = release_version || gem_version
-  spec.required_ruby_version = ">= 2.4"
+  spec.required_ruby_version = ">= 2.7"
 
   spec.authors = ["Team Umbrellio"]
   spec.email = ["oss@umbrellio.biz"]
