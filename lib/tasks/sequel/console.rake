@@ -5,7 +5,7 @@ namespace :db do
     rails_db_config = Rails.application.config.database_configuration
 
     sequel_configuration = SequelRails::Configuration.new
-    SequelRails.configuration = sequel_configuration.merge!(:raw => rails_db_config)
+    SequelRails.configuration = sequel_configuration.merge!(raw: rails_db_config)
 
     case storage = SequelRails::Storage.adapter_for(Rails.env)
     when SequelRails::Storage::Postgres
@@ -15,7 +15,7 @@ namespace :db do
       ENV["PGUSER"]         = config[:username] if config[:username]
       ENV["PGHOST"]         = config[:host] if config[:host]
       ENV["PGPORT"]         = config[:port].to_s if config[:port]
-      ENV["PGPASSWORD"]     = config[:password].to_s if config[:password] && @options[:include_password]
+      ENV["PGPASSWORD"]     = config[:password].to_s if config[:password]
       ENV["PGSSLMODE"]      = config[:sslmode].to_s if config[:sslmode]
       ENV["PGSSLCERT"]      = config[:sslcert].to_s if config[:sslcert]
       ENV["PGSSLKEY"]       = config[:sslkey].to_s if config[:sslkey]
