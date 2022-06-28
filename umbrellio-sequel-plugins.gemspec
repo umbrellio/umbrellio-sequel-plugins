@@ -5,14 +5,17 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   gem_version = "0.8.0"
-  release_version = "#{gem_version}.#{ENV["GITHUB_RUN_NUMBER"]}" if ENV["PUBLISH_JOB"]
+
+  if ENV.fetch("PUBLISH_JOB", nil)
+    release_version = "#{gem_version}.#{ENV.fetch("GITHUB_RUN_NUMBER")}"
+  end
 
   spec.name = "umbrellio-sequel-plugins"
   spec.version = release_version || gem_version
   spec.required_ruby_version = ">= 2.4"
 
-  spec.authors = ["nulldef"]
-  spec.email = ["nulldefiner@gmail.com", "oss@umbrellio.biz"]
+  spec.authors = ["Team Umbrellio"]
+  spec.email = ["oss@umbrellio.biz"]
   spec.homepage = "https://github.com/umbrellio/umbrellio-sequel-plugins"
   spec.licenses = ["MIT"]
   spec.summary = "Sequel plugins"
