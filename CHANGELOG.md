@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] 2022-06-28
+### Added
+- `rake db:console` command (also aliased as `rake db`) for easy access to the DB console. Only PostgreSQL supported at this time.
+
 ## [0.7.0] 2022-06-24
 ### Added
 - `DB.extension(:set_local)` - allows to set transaction locals;
