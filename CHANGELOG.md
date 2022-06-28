@@ -1,9 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.8.0] 2022-06-28
+## [0.8.0] 2022-06-29
 ### Added
-- `rake db:console` command (also aliased as `rake db`) for easy access to the DB console. Only PostgreSQL supported at this time.
+- `dbconsole` rake/rails command (also aliased as `db`) for easy access to the DB console. Only PostgreSQL supported at this time.
 
 ## [0.7.0] 2022-06-24
 ### Added

@@ -457,6 +457,10 @@ rake sequel:undo VERSION=1549624163
 
 Overrides Rails default `dbconsole` and `db` commands. Can be used both via `rails` and `rake` commands, however to use them with `rails` you will need to add the following line in your `boot.rb` file:
 
+```ruby
+require "umbrellio_sequel_plugins/rails_commands"
+```
+
 ## License
 
 Released under MIT License.
