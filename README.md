@@ -39,6 +39,7 @@ $ bundle
 
 # Tools
 - [`TimestampMigratorUndoExtension`](#TimestampMigratorUndoExtension)
+- [`RailsCommands`](#RailsCommands)
 
 ## CurrencyRates
 
@@ -188,7 +189,7 @@ OR
 ```ruby
 # wives attributes: id (pk), husband_id (fk)
 # husbands attributes: id (pk), wife_id (fk)
- 
+
 Wife = Sequel::Model(:wives)
 Husband = Sequel::Model(:husbands)
 
@@ -237,7 +238,7 @@ Example:
 ```ruby
 Sequel.migration do
   transaction_options rollback: :always
-  
+
   up { DB.select("1") }
 end
 ```
@@ -452,11 +453,17 @@ Example:
 rake sequel:undo VERSION=1549624163
 ```
 
+## RailsCommands
+
+Overrides Rails default `dbconsole` and `db` commands. Can be used both via `rails` and `rake` commands, however to use them with `rails` you will need to add the following line in your `boot.rb` file:
+
 ## License
+
 Released under MIT License.
 
 ## Authors
-Created by Aleksey Bespalov.
+
+Created by Team Umbrellio.
 
 <a href="https://github.com/umbrellio/">
   <img style="float: left;" src="https://umbrellio.github.io/Umbrellio/supported_by_umbrellio.svg" alt="Supported by Umbrellio" width="439" height="72">
