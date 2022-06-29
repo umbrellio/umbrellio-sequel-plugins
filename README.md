@@ -455,10 +455,10 @@ rake sequel:undo VERSION=1549624163
 
 ## RailsCommands
 
-Overrides Rails default `dbconsole` and `db` commands. Can be used both via `rails` and `rake` commands, however to use them with `rails` you will need to add the following line in your `boot.rb` file:
+Overrides Rails default `dbconsole` and `db` commands. In order to use it, you have to add the following line to you `boot.rb` file:
 
 ```ruby
-require "umbrellio_sequel_plugins/rails_commands"
+require "umbrellio_sequel_plugins/rails_db_command"
 ```
 
 ## License
