@@ -33,7 +33,9 @@ class Rails::DBConsole
   end
 
   def adapter
-    configuration_hash.fetch(:adapter)
+    mapping = SequelRails::DbConfig::ADAPTER_MAPPING.invert
+    value = configuration_hash.fetch(:adapter)
+    mapping[value] || value
   end
 
   def database
