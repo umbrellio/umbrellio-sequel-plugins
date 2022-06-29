@@ -39,7 +39,7 @@ $ bundle
 
 # Tools
 - [`TimestampMigratorUndoExtension`](#TimestampMigratorUndoExtension)
-- [`RailsCommands`](#RailsCommands)
+- [`Rails DBConsole`](#Rails-DBConsole)
 
 ## CurrencyRates
 
@@ -453,9 +453,9 @@ Example:
 rake sequel:undo VERSION=1549624163
 ```
 
-## RailsCommands
+## Rails DBConsole
 
-Overrides Rails default `dbconsole` and `db` commands. In order to use it, you have to add the following line to you `boot.rb` file:
+Overrides Rails default `dbconsole` and `db` commands. In order to use it, you have to add the following line to your `boot.rb` file:
 
 ```ruby
 require "umbrellio_sequel_plugins/rails_db_command"
