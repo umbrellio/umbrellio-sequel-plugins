@@ -10,8 +10,8 @@ namespace :sequel do
       Dir.glob("#{path}/db/migrate/*.rb").map { |filename| File.basename(filename).to_i }
     end
 
-    old_migrations = extract_migrations(ENV["OLD_RELEASE"])
-    new_migrations = extract_migrations(ENV["NEW_RELEASE"])
+    old_migrations = extract_migrations(ENV.fetch("OLD_RELEASE"))
+    new_migrations = extract_migrations(ENV.fetch("NEW_RELEASE"))
     migrations_to_rollback = old_migrations - new_migrations
 
     next if migrations_to_rollback.empty?

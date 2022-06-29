@@ -4,8 +4,8 @@
 module Sequel::Plugins::Synchronize
   module ClassMethods
     # Watch Sequel::Synchronize#synchronize_with
-    def synchronize_with(*args, &block)
-      db.extension(:synchronize).synchronize_with(*args, &block)
+    def synchronize_with(...)
+      db.extension(:synchronize).synchronize_with(...)
     end
   end
 

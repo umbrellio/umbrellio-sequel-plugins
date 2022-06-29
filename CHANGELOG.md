@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] 2022-06-29
+### Added
+
+- `rails dbconsole` command support for Sequel (also aliased as `rails db`) for easy access to the DB console. See the README for installation instructions.
+
 ## [0.7.0] 2022-06-24
 ### Added
 - `DB.extension(:set_local)` - allows to set transaction locals;
