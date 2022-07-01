@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    umbrellio-sequel-plugins (0.8.0)
+    umbrellio-sequel-plugins (0.9.0)
       sequel
       symbiont-ruby
 
