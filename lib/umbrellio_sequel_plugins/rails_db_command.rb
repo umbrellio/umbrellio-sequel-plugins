@@ -4,6 +4,8 @@ require "rails/command"
 require "rails/commands/dbconsole/dbconsole_command"
 
 class Rails::Command::DbconsoleCommand < Rails::Command::Base
+  class_option :server, type: :string, desc: "Specifies the server to use."
+
   def perform
     require "rake"
     Rake.with_application(&:load_rakefile) # Needed to initialize Rails.application
@@ -29,7 +31,14 @@ class Rails::DBConsole
     SequelRails.configuration = sequel_configuration.merge!(raw: rails_db_config)
 
     storage = SequelRails::Storage.adapter_for(Rails.env)
-    @configuration_hash = storage.config.with_indifferent_access
+    config = storage.config.with_indifferent_access
+
+    if @options[:server]
+      server_config = config.fetch(:servers).fetch(@options[:server])
+      config.merge!(server_config)
+    end
+
+    @configuration_hash = config
   end
 
   def adapter
