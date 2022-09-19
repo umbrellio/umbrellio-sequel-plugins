@@ -2,6 +2,7 @@
 
 module SequelPlugins
   if defined?(::Rails)
-    Engine = Class.new(::Rails::Engine)
+    class Engine < ::Rails::Engine
+    end
   end
 end
