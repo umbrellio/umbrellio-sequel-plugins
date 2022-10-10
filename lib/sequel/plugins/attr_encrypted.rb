@@ -74,7 +74,7 @@ module Sequel::Plugins::AttrEncrypted
 
       @_encrypted_attributes ||= []
       @_attr_encrypted_module = Module.new
-      prepend @_attr_encrypted_module
+      include @_attr_encrypted_module
     end
   end
 

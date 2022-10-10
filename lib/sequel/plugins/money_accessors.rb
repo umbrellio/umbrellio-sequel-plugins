@@ -62,7 +62,7 @@ module Sequel::Plugins::MoneyAccessors
     def include_accessors_module!
       return if defined?(@_money_accessors_module)
       @_money_accessors_module = Module.new
-      prepend @_money_accessors_module
+      include @_money_accessors_module
     end
   end
 end
