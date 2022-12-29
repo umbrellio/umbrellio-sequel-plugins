@@ -2,7 +2,7 @@
 
 require "logger"
 
-DB = Sequel.connect(ENV.fetch("DB_URL", "postgres:///sequel_plugins"))
+DB = Sequel.connect(ENV.fetch("DB_URL", "postgres://localhost/sequel_plugins"))
 DB.logger = Logger.new("log/db.log")
 
 Sequel::Model.db = DB
