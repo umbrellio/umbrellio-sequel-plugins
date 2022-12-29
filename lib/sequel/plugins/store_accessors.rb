@@ -16,7 +16,7 @@ module Sequel::Plugins::StoreAccessors
     #   user.first_name # => "John"
     #   user.data # => {"first_name": "John"}
     def store(column, *fields)
-      include_accessors_module
+      include_accessors_module(column)
 
       fields.each do |field|
         define_store_getter(column, field)
@@ -26,10 +26,16 @@ module Sequel::Plugins::StoreAccessors
 
     private
 
-    def include_accessors_module
-      return if defined?(@_store_accessors_module)
-      @_store_accessors_module = Module.new
-      include @_store_accessors_module
+    def include_accessors_module(column)
+      unless defined?(@_store_accessors_module)
+        @_store_accessors_module = Module.new
+        include @_store_accessors_module
+      end
+
+      prev_columns = @_store_accessors_module.instance_variable_get(:@_store_columns) || []
+      new_columns = [*prev_columns, column]
+      @_store_accessors_module.instance_variable_set(:@_store_columns, new_columns)
+      @_store_accessors_module.define_method(:store_columns) { new_columns }
     end
 
     def define_store_getter(column, field)
@@ -46,6 +52,23 @@ module Sequel::Plugins::StoreAccessors
           send("#{column}=", send(column).to_h.merge(field.to_s => value))
         end
       end
+    end
+  end
+
+  module InstanceMethods
+    def before_update
+      super
+      return unless respond_to?(:store_columns)
+      send(:store_columns).each do |store_column|
+        json = Sequel[store_column].pg_jsonb.concat(send(store_column))
+        send("#{store_column}=", json) if changed_columns.include?(store_column)
+      end
+    end
+
+    def after_update
+      super
+      return unless respond_to?(:store_columns)
+      reload unless send(:store_columns).all?(Hash)
     end
   end
 end
