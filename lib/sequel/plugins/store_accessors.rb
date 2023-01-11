@@ -75,7 +75,7 @@ module Sequel::Plugins::StoreAccessors
     def _refresh_store_columns
       refreshed = _refresh_get(this) || raise(NoExistingObject, "Record not found")
       send(:store_columns).each do |store_column|
-        @values[store_column] = refreshed.send(store_column)
+        @values[store_column] = refreshed[store_column]
       end
     end
   end
