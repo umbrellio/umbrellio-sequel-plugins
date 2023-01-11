@@ -71,7 +71,7 @@ module Sequel::Plugins::StoreAccessors
       super
       return unless respond_to?(:store_columns)
       send(:store_columns).each do |store_column|
-        json = Sequel.function(:coalesce, Sequel[store_column].pg_jsonb, Sequel.pg_jsonb({}))
+        json = Sequel.pg_jsonb(Sequel.function(:coalesce, Sequel[store_column], {}))
         updated = json.concat(send(store_column))
         send("#{store_column}=", updated, _force_update: true) if changed_columns.include?(store_column)
       end
