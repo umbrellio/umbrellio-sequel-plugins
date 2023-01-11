@@ -380,12 +380,20 @@ Example:
 
 ```ruby
 class User < Sequel::Model
-  store :data, :first_name
+  store :data, :first_name, :last_name
 end
 
 user = User.create(first_name: "John")
 user.first_name # => "John"
 user.data # => {"first_name": "John"}
+```
+
+Warning: direct update of column will patch it
+
+Example:
+
+```ruby
+user.update(data: { "last_name": "Wick" }) # => {"first_name": "John", "last_name": "Wick"}
 ```
 
 ## Synchronize

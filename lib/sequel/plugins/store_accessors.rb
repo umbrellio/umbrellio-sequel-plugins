@@ -17,7 +17,6 @@ module Sequel::Plugins::StoreAccessors
     #   user.data # => {"first_name": "John"}
     def store(column, *fields)
       include_accessors_module(column)
-      restrict_direct_update(column)
 
       fields.each do |field|
         define_store_getter(column, field)
@@ -39,16 +38,6 @@ module Sequel::Plugins::StoreAccessors
       @_store_accessors_module.define_method(:store_columns) { new_columns }
     end
 
-    def restrict_direct_update(column)
-      @_store_accessors_module.module_eval do
-        define_method("#{column}=") do |*args, **kwargs, &block|
-          force_update = kwargs.delete(:_force_update)
-          raise ArgumentError("Can't directly update store") unless force_update
-          super(*args, **kwargs, &block)
-        end
-      end
-    end
-
     def define_store_getter(column, field)
       @_store_accessors_module.module_eval do
         define_method(field) do
@@ -60,7 +49,7 @@ module Sequel::Plugins::StoreAccessors
     def define_store_setter(column, field)
       @_store_accessors_module.module_eval do
         define_method("#{field}=") do |value|
-          send("#{column}=", send(column).to_h.merge(field.to_s => value), _force_update: true)
+          send("#{column}=", send(column).to_h.merge(field.to_s => value))
         end
       end
     end
@@ -71,9 +60,9 @@ module Sequel::Plugins::StoreAccessors
       super
       return unless respond_to?(:store_columns)
       send(:store_columns).each do |store_column|
-        json = Sequel.pg_jsonb(Sequel.function(:coalesce, Sequel[store_column], {}))
+        json = Sequel.pg_jsonb_op(Sequel.function(:coalesce, Sequel[store_column], {}))
         updated = json.concat(send(store_column))
-        send("#{store_column}=", updated, _force_update: true) if changed_columns.include?(store_column)
+        send("#{store_column}=", updated) if changed_columns.include?(store_column)
       end
     end
 
