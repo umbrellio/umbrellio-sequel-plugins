@@ -21,14 +21,6 @@ RSpec.describe "store_accessors" do
     expect(post.metadata).to eq("tags" => %w[first second])
   end
 
-  it "doesn't reload if unchanged" do
-    first_post = Post[post.id]
-    first_post.marker = true
-    first_post.save_changes
-    post.save_changes
-    expect(post.marker).to be_nil
-  end
-
   it "safely updates" do
     first_post = Post[post.id]
     first_post.marker = true
@@ -37,7 +29,7 @@ RSpec.describe "store_accessors" do
     post.tags = %w[first]
     post.amount = 5
     post.save_changes
-    expect(post.tags).to eq(%w[first])
+    expect(post.reload.tags).to eq(%w[first])
     expect(post.marker).to eq(true)
     expect(post.amount).to eq(5)
     expect(post.project_id).to eq(1)

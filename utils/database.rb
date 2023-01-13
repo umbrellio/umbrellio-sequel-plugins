@@ -24,6 +24,7 @@ Sequel.extension :pg_json_ops
 Sequel.extension :pg_range_ops
 
 Sequel::Model.plugin :attr_encrypted
+Sequel::Model.plugin :dirty
 Sequel::Model.plugin :duplicate
 Sequel::Model.plugin :get_column_value
 Sequel::Model.plugin :money_accessors

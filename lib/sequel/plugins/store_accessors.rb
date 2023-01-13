@@ -56,36 +56,25 @@ module Sequel::Plugins::StoreAccessors
   end
 
   module InstanceMethods
-    def before_update
-      super
-      return unless respond_to?(:store_columns)
-      @_stores_current_values = {}
-      send(:store_columns).each do |store_column|
-        current = send(store_column)
-        @_stores_current_values[store_column] = current
-        next unless changed_columns.include?(store_column)
+    def _update_without_checking(columns)
+      return super unless respond_to?(:store_columns)
 
-        initial = initial_value(store_column)
+      mapped_columns = columns.map do |k, current|
+        next [k, current] unless send(:store_columns).include?(k)
+
+        initial = initial_value(k)
         patch = current.dup.delete_if { |k, v| initial.key?(k) && initial[k] == v }
         deleted = initial.dup.delete_if { |k, _| current.key?(k) }
 
-        json = Sequel.pg_jsonb_op(Sequel.function(
-            :coalesce,
-            Sequel[store_column],
-            Sequel.pg_jsonb({}),
-          ),
+        json = Sequel.pg_jsonb_op(
+          Sequel.function(:coalesce, Sequel[k], Sequel.pg_jsonb({})),
         )
         updated = deleted.inject(json) { |res, (k, _)| res.delete_path([k.to_s]) }
-        updated = updated.concat(patch)
-        send("#{store_column}=", updated)
-      end
-    end
 
-    def after_update
-      super
-      return unless respond_to?(:store_columns)
-      send(:store_columns).each { |c| send("#{c}=", @_stores_current_values[c]) }
-      @_stores_current_values = {}
+        [k, updated.concat(patch)]
+      end.to_h
+
+      super(mapped_columns)
     end
   end
 end
