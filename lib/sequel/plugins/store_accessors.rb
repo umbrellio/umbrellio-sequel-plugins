@@ -61,11 +61,11 @@ module Sequel::Plugins::StoreAccessors
       return unless respond_to?(:store_columns)
       @_stores_current_values = {}
       send(:store_columns).each do |store_column|
+        current = send(store_column)
         @_stores_current_values[store_column] = current
         next unless changed_columns.include?(store_column)
 
         initial = initial_value(store_column)
-        current = send(store_column)
         patch = current.dup.delete_if { |k, v| initial.key?(k) && initial[k] == v }
         deleted = initial.dup.delete_if { |k, _| current.key?(k) }
 
