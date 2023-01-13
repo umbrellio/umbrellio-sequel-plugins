@@ -24,6 +24,10 @@ module Sequel::Plugins::StoreAccessors
       end
     end
 
+    def call(_)
+      super.tap(&:calculate_initial_store)
+    end
+
     private
 
     def include_accessors_module(column)
@@ -56,25 +60,64 @@ module Sequel::Plugins::StoreAccessors
   end
 
   module InstanceMethods
+    def after_update
+      super
+      refresh_initial_store
+    end
+
+    private
+
     def _update_without_checking(columns)
       return super unless respond_to?(:store_columns)
 
       mapped_columns = columns.to_h do |k, v|
-        next [k, v] unless send(:store_columns).include?(k)
+        next [k, v] unless store_columns.include?(k)
 
-        initial = initial_value(k) || {}
+        initial_fields = initial_store_fields[k] || []
+        initial_hashes = store_values_hashes[k] || {}
         current = v || {}
-        patch = current.dup.delete_if { |k, v| initial.key?(k) && initial[k] == v }
-        deleted = initial.dup.delete_if { |k, _| current.key?(k) }
+        patch = current.dup.delete_if do |k, v|
+          initial_fields.include?(k) && initial_hashes[k] == v.hash
+        end
+        deleted = initial_fields.dup - current.keys
 
         json = Sequel.pg_jsonb_op(
           Sequel.function(:coalesce, Sequel[k], Sequel.pg_jsonb({})),
         )
-        updated = deleted.inject(json) { |res, (k, _)| res.delete_path([k.to_s]) }
+        updated = deleted.inject(json) { |res, k| res.delete_path([k.to_s]) }
         [k, updated.concat(patch)]
       end
 
       super(mapped_columns)
+    end
+
+    def _refresh(dataset)
+      super
+      refresh_initial_store
+    end
+
+    def _save_refresh
+      super
+      refresh_initial_store
+    end
+
+    def calculate_initial_store
+      @store_values_hashes || refresh_initial_store
+    end
+
+    def refresh_initial_store
+      return unless respond_to?(:store_columns)
+      store_values = @values.slice(store_columns)
+      @initial_store_fields = store_values.transform_values { |v| v.to_h.keys }
+      @store_values_hashes = store_values.transform_values { |v| v.transform_values(&:hash) }
+    end
+
+    def initial_store_fields
+      @initial_store_fields || {}
+    end
+
+    def store_values_hashes
+      @store_values_hashes || {}
     end
   end
 end
