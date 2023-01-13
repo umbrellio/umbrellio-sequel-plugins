@@ -59,10 +59,11 @@ module Sequel::Plugins::StoreAccessors
     def _update_without_checking(columns)
       return super unless respond_to?(:store_columns)
 
-      mapped_columns = columns.map do |k, current|
-        next [k, current] unless send(:store_columns).include?(k)
+      mapped_columns = columns.to_h do |k, v|
+        next [k, v] unless send(:store_columns).include?(k)
 
-        initial = initial_value(k)
+        initial = initial_value(k) || {}
+        current = v || {}
         patch = current.dup.delete_if { |k, v| initial.key?(k) && initial[k] == v }
         deleted = initial.dup.delete_if { |k, _| current.key?(k) }
 
@@ -70,9 +71,8 @@ module Sequel::Plugins::StoreAccessors
           Sequel.function(:coalesce, Sequel[k], Sequel.pg_jsonb({})),
         )
         updated = deleted.inject(json) { |res, (k, _)| res.delete_path([k.to_s]) }
-
         [k, updated.concat(patch)]
-      end.to_h
+      end
 
       super(mapped_columns)
     end
