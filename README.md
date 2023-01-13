@@ -372,8 +372,6 @@ order.currency # => "EUR"
 
 ## StoreAccessors
 
-Requires plugin `dirty`.
-
 Enable: `Sequel::Model.plugin :store_accessors`
 
 Plugin for using jsonb field keys as model properties.
