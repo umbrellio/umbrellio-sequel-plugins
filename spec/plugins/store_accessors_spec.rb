@@ -21,7 +21,7 @@ RSpec.describe "store_accessors" do
     expect(post.metadata).to eq("tags" => %w[first second])
   end
 
-  it "safely updates" do
+  it "updates only changed" do
     first_post = Post[post.id]
     first_post.marker = true
     first_post.project_id = 1
@@ -33,5 +33,11 @@ RSpec.describe "store_accessors" do
     expect(post.marker).to eq(true)
     expect(post.amount).to eq(5)
     expect(post.project_id).to eq(1)
+  end
+
+  it "deletes fields" do
+    post.update(data: {}, metadata: {})
+    expect(post.reload.tags).to eq(nil)
+    expect(post.amount).to eq(nil)
   end
 end

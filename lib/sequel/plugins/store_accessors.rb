@@ -65,6 +65,11 @@ module Sequel::Plugins::StoreAccessors
       refresh_initial_store
     end
 
+    def after_create
+      super
+      refresh_initial_store
+    end
+
     def calculate_initial_store
       @store_values_hashes || refresh_initial_store
     end
@@ -107,7 +112,7 @@ module Sequel::Plugins::StoreAccessors
 
     def refresh_initial_store
       return unless respond_to?(:store_columns)
-      store_values = @values.slice(store_columns)
+      store_values = @values.slice(*store_columns)
       @initial_store_fields = store_values.transform_values { |v| v.to_h.keys }
       @store_values_hashes = store_values.transform_values { |v| v.transform_values(&:hash) }
     end
