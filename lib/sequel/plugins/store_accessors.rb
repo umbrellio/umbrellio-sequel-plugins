@@ -112,9 +112,9 @@ module Sequel::Plugins::StoreAccessors
 
     def refresh_initial_store
       return unless respond_to?(:store_columns)
-      store_values = @values.slice(*store_columns).to_h
+      store_values = @values.slice(*store_columns)
       @initial_store_fields = store_values.transform_values { |v| v.to_h.keys }
-      @store_values_hashes = store_values.transform_values { |v| v.transform_values(&:hash) }
+      @store_values_hashes = store_values.transform_values { |v| v.to_h.transform_values(&:hash) }
     end
 
     def initial_store_fields
