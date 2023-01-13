@@ -65,6 +65,10 @@ module Sequel::Plugins::StoreAccessors
       refresh_initial_store
     end
 
+    def calculate_initial_store
+      @store_values_hashes || refresh_initial_store
+    end
+
     private
 
     def _update_without_checking(columns)
@@ -99,10 +103,6 @@ module Sequel::Plugins::StoreAccessors
     def _save_refresh
       super
       refresh_initial_store
-    end
-
-    def calculate_initial_store
-      @store_values_hashes || refresh_initial_store
     end
 
     def refresh_initial_store
