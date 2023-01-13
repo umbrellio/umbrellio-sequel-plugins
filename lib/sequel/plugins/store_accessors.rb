@@ -74,30 +74,46 @@ module Sequel::Plugins::StoreAccessors
       @store_values_hashes || refresh_initial_store
     end
 
+    def changed_columns
+      changed = super
+      return changed unless respond_to?(:store_columns)
+      store_changed = store_columns.select { |c| patched(c).any? || deleted(c).any? }
+      (changed + store_changed).uniq
+    end
+
     private
 
     def _update_without_checking(columns)
       return super unless respond_to?(:store_columns)
 
-      mapped_columns = columns.to_h do |k, v|
-        next [k, v] unless store_columns.include?(k)
-
-        initial_fields = initial_store_fields[k] || []
-        initial_hashes = store_values_hashes[k] || {}
-        current = v || {}
-        patch = current.dup.delete_if do |k, v|
-          initial_fields.include?(k) && initial_hashes[k] == v.hash
-        end
-        deleted = initial_fields.dup - current.keys
+      mapped_columns = columns.to_h do |column, v|
+        next [column, v] unless store_columns.include?(column)
 
         json = Sequel.pg_jsonb_op(
-          Sequel.function(:coalesce, Sequel[k], Sequel.pg_jsonb({})),
+          Sequel.function(:coalesce, Sequel[column], Sequel.pg_jsonb({})),
         )
-        updated = deleted.inject(json) { |res, k| res.delete_path([k.to_s]) }
-        [k, updated.concat(patch)]
+        updated = deleted(column).inject(json) { |res, k| res.delete_path([k.to_s]) }
+        [column, updated.concat(patched(column))]
       end
 
       super(mapped_columns)
+    end
+
+    def patched(column)
+      initial_fields = initial_store_fields[column] || []
+      initial_hashes = store_values_hashes[column] || {}
+      current = @values[column]
+
+      current.dup.delete_if do |k, v|
+        initial_fields.include?(k) && initial_hashes[k] == v.hash
+      end
+    end
+
+    def deleted(column)
+      initial_fields = initial_store_fields[column] || []
+      current = @values[column]
+
+      initial_fields.dup - current.keys
     end
 
     def _refresh(dataset)

@@ -37,7 +37,43 @@ RSpec.describe "store_accessors" do
 
   it "deletes fields" do
     post.update(data: {}, metadata: {})
-    expect(post.reload.tags).to eq(nil)
+    expect(post.reload.data).to eq({})
+    expect(post.metadata).to eq({})
+    expect(post.tags).to eq(nil)
     expect(post.amount).to eq(nil)
+  end
+
+  it "directly updates right" do
+    post.update(
+      data: { amount: 1, project_id: 2 },
+      metadata: { tags: %w[first], marker: true },
+    )
+    expect(post.reload.data.to_h).to eq("amount" => 1, "project_id" => 2)
+    expect(post.metadata.to_h).to eq("tags" => %w[first], "marker" => true)
+    expect(post.amount).to eq(1)
+    expect(post.project_id).to eq(2)
+    expect(post.tags).to eq(%w[first])
+    expect(post.marker).to eq(true)
+  end
+
+  it "updates fields" do
+    post.update(tags: %w[first])
+    expect(post.reload.metadata.to_h).to eq("tags" => %w[first])
+    expect(post.tags).to eq(%w[first])
+  end
+
+  it "updates on mutate fields" do
+    post.tags.push("third")
+    post.save_changes
+    expect(post.reload.metadata.to_h).to eq("tags" => %w[first second third])
+    expect(post.tags).to eq(%w[first second third])
+  end
+
+  it "updates on mutate store" do
+    post.metadata[:marker] = true
+    post.save_changes
+    expect(post.reload.metadata.to_h).to eq("tags" => %w[first second], "marker" => true)
+    expect(post.tags).to eq(%w[first second])
+    expect(post.marker).to eq(true)
   end
 end
