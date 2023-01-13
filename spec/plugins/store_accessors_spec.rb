@@ -76,4 +76,12 @@ RSpec.describe "store_accessors" do
     expect(post.tags).to eq(%w[first second])
     expect(post.marker).to eq(true)
   end
+
+  it "updates from nil" do
+    post.update(data: nil)
+    post.amount = 20
+    post.save_changes
+    expect(post.reload.data).to eq("amount" => 20)
+    expect(post.amount).to eq(20)
+  end
 end

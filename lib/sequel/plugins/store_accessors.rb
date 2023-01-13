@@ -102,7 +102,7 @@ module Sequel::Plugins::StoreAccessors
     def patched(column)
       initial_fields = initial_store_fields[column] || []
       initial_hashes = store_values_hashes[column] || {}
-      current = @values[column]
+      current = @values[column] || {}
 
       current.dup.delete_if do |k, v|
         initial_fields.include?(k) && initial_hashes[k] == v.hash
@@ -111,7 +111,7 @@ module Sequel::Plugins::StoreAccessors
 
     def deleted(column)
       initial_fields = initial_store_fields[column] || []
-      current = @values[column]
+      current = @values[column] || {}
 
       initial_fields.dup - current.keys
     end
