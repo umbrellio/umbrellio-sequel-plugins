@@ -59,31 +59,33 @@ module Sequel::Plugins::StoreAccessors
     def before_update
       super
       return unless respond_to?(:store_columns)
+      @_stores_current_values = {}
       send(:store_columns).each do |store_column|
-        json = Sequel.pg_jsonb_op(
-          Sequel.function(
+        @_stores_current_values[store_column] = current
+        next unless changed_columns.include?(store_column)
+
+        initial = initial_value(store_column)
+        current = send(store_column)
+        patch = current.dup.delete_if { |k, v| initial.key?(k) && initial[k] == v }
+        deleted = initial.dup.delete_if { |k, _| current.key?(k) }
+
+        json = Sequel.pg_jsonb_op(Sequel.function(
             :coalesce,
             Sequel[store_column],
             Sequel.pg_jsonb({}),
           ),
         )
-        updated = json.concat(send(store_column))
-        send("#{store_column}=", updated) if changed_columns.include?(store_column)
+        updated = deleted.inject(json) { |res, (k, _)| res.delete_path([k.to_s]) }
+        updated = updated.concat(patch)
+        send("#{store_column}=", updated)
       end
     end
 
     def after_update
       super
       return unless respond_to?(:store_columns)
-      _refresh_store_columns unless send(:store_columns).all? { |c| send(c).is_a?(Hash) }
-    end
-
-    def _refresh_store_columns
-      refreshed = _refresh_get(this) || raise(NoExistingObject, "Record not found")
-      send(:store_columns).each do |store_column|
-        next if send(store_column).is_a?(Hash)
-        @values[store_column] = refreshed[store_column]
-      end
+      send(:store_columns).each { |c| send("#{c}=", @_stores_current_values[c]) }
+      @_stores_current_values = {}
     end
   end
 end
