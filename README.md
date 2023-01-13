@@ -372,6 +372,8 @@ order.currency # => "EUR"
 
 ## StoreAccessors
 
+Requires plugin `dirty`.
+
 Enable: `Sequel::Model.plugin :store_accessors`
 
 Plugin for using jsonb field keys as model properties.
@@ -386,22 +388,6 @@ end
 user = User.create(first_name: "John")
 user.first_name # => "John"
 user.data # => {"first_name": "John"}
-```
-
-Warning! Direct update of column will patch it.
-
-Example:
-
-```ruby
-user.update(data: {"last_name": "Wick"})
-user.data # => {"first_name": "John", "last_name": "Wick"}
-```
-
-If you want to use with `dirty` plugin then add `dirty` after `store_accessors`:
-
-```ruby
-Sequel::Model.plugin :store_accessors
-Sequel::Model.plugin :dirty # Must be after store_accessors
 ```
 
 ## Synchronize

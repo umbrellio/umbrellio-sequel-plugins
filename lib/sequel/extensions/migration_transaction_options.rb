@@ -27,10 +27,14 @@ module MigratorExtension
       if migration.use_transactions.nil?
         @db.supports_transactional_ddl?
       else
+        # :nocov:
         migration.use_transactions
+        # :nocov:
       end
     else
+      # :nocov:
       @use_transactions
+      # :nocov:
     end
   end
 
