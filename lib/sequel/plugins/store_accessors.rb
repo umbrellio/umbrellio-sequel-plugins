@@ -77,8 +77,16 @@ module Sequel::Plugins::StoreAccessors
     def changed_columns
       changed = super
       return changed unless respond_to?(:store_columns)
-      store_changed = store_columns.select { |c| patched(c).any? || deleted(c).any? }
-      (changed + store_changed).uniq
+      changed = changed.dup if frozen?
+      store_columns.each do |col|
+        match = patched(col).empty? && deleted(col).empty?
+        if changed.include?(col)
+          changed.delete(col) if match
+        else
+          changed << col unless match
+        end
+      end
+      changed
     end
 
     private
