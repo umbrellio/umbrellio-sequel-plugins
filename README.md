@@ -380,7 +380,7 @@ Example:
 
 ```ruby
 class User < Sequel::Model
-  store :data, :first_name
+  store :data, :first_name, :last_name
 end
 
 user = User.create(first_name: "John")
