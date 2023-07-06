@@ -11,8 +11,8 @@ namespace :sequel do
     migrator = Sequel::TimestampMigrator.new(DB, archive_path, allow_missing_migration_files: true)
 
     applied_migrations = migrator.applied_migrations.map(&:to_i)
-    current_migrations = Rails.root.glob("db/migrate/*.rb").map { |x| File.basename(x).to_i }
-    missing_migrations = applied_migrations - current_migrations
+    filesystem_migrations = Rails.root.glob("db/migrate/*.rb").map { |x| File.basename(x).to_i }
+    missing_migrations = applied_migrations - filesystem_migrations
 
     if missing_migrations.any?
       missing_migrations.each do |migration|
