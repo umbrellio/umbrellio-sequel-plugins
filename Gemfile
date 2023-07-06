@@ -4,7 +4,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "bundler"
 gem "money"
 gem "pg"
 gem "pry"
