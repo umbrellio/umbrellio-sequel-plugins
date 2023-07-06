@@ -3,7 +3,7 @@
 require "sequel/timestamp_migrator_undo_extension"
 
 namespace :sequel do
-  # Rollback migrations that are applied and not present in current release but present in archive
+  desc "Rollback migrations that were applied earlier but are not present in current release"
   task rollback_archived_migrations: :environment do
     DB.log_info("Finding applied migrations not present in current release...")
 
