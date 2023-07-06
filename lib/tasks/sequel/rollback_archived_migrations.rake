@@ -5,7 +5,7 @@ require "sequel/timestamp_migrator_undo_extension"
 namespace :sequel do
   # Rollback migrations that are applied and not present in current release but present in archive
   task rollback_archived_migrations: :environment do
-    puts "Finding applied migrations not present in current release..."
+    DB.log_info("Finding applied migrations not present in current release...")
 
     archive_path = Pathname.new(ENV.fetch("ARCHIVE_PATH")).expand_path.join("db/migrate")
     migrator = Sequel::TimestampMigrator.new(DB, archive_path, allow_missing_migration_files: true)
@@ -16,11 +16,11 @@ namespace :sequel do
 
     if missing_migrations.any?
       missing_migrations.each do |migration|
-        puts "Rolling back migration #{migration}..."
+        DB.log_info("Rolling back migration #{migration}...")
         migrator.undo(migration)
       end
     else
-      puts "No migrations found"
+      DB.log_info("No migrations found")
     end
   end
 end
