@@ -4,7 +4,7 @@ lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  gem_version = "0.11.0"
+  gem_version = "0.12.0"
 
   if ENV.fetch("PUBLISH_JOB", nil)
     release_version = "#{gem_version}.#{ENV.fetch("GITHUB_RUN_NUMBER")}"
@@ -26,14 +26,4 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "sequel"
   spec.add_runtime_dependency "symbiont-ruby"
-
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "money"
-  spec.add_development_dependency "pg"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec"
-  spec.add_development_dependency "rubocop-config-umbrellio"
-  spec.add_development_dependency "simplecov"
-  spec.add_development_dependency "simplecov-lcov"
 end

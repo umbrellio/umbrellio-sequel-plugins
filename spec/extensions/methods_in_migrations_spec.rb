@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def outer_method(direction)
-  ::INTERCEPTOR << "outer_#{direction}"
+  INTERCEPTOR << "outer_#{direction}"
 end
 
 RSpec.describe "methods_in_migrations" do
