@@ -9,11 +9,9 @@ namespace :sequel do
       column :code, "text", null: false
     end
 
-    migrations = []
-
-    Rails.root.glob("db/migrate/*.rb").each do |file|
+    migrations = Rails.root.glob("db/migrate/*.rb").map do |file|
       filename = file.basename.to_s
-      migrations << { version: filename.to_i, filename: filename, code: file.read }
+      { version: filename.to_i, filename: filename, code: file.read }
     end
 
     conflict_options = {
