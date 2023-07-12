@@ -5,13 +5,15 @@ namespace :sequel do
   task archive_migrations: :environment do
     DB.create_table?(:schema_migrations_code) do
       column :version, "numeric", primary_key: true
-      column :code, "text"
+      column :filename, "text", null: false
+      column :code, "text", null: false
     end
 
     migrations = []
 
     Rails.root.glob("db/migrate/*.rb").each do |file|
-      migrations << { version: file.basename.to_s.to_i, code: file.read }
+      filename = file.basename.to_s
+      migrations << { version: filename.to_i, filename: filename, code: file.read }
     end
 
     conflict_options = {

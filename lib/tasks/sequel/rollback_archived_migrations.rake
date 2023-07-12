@@ -9,8 +9,7 @@ namespace :sequel do
 
     Dir.mktmpdir do |tmpdir|
       DB[:schema_migrations_code].each do |migration|
-        filename = "#{migration.fetch(:version).to_i}_migration.rb"
-        path = File.join(tmpdir, filename)
+        path = File.join(tmpdir, migration.fetch(:filename))
         File.write(path, migration.fetch(:code))
       end
 
