@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
 namespace :sequel do
-  desc "Archive migrations code"
+  desc "Archive migrations source code"
   task archive_migrations: :environment do
-    DB.create_table?(:schema_migrations_code) do
+    DB.create_table?(:schema_migrations_sources) do
       column :version, "numeric", primary_key: true
       column :filename, "text", null: false
-      column :code, "text", null: false
+      column :source, "text", null: false
     end
 
     migrations = Rails.root.glob("db/migrate/*.rb").map do |file|
       filename = file.basename.to_s
-      { version: filename.to_i, filename: filename, code: file.read }
+      { version: filename.to_i, filename: filename, source: file.read }
     end
 
     conflict_options = {
       target: :version,
-      update: { code: Sequel[:excluded][:code] },
+      update: { source: Sequel[:excluded][:source] },
     }
 
-    DB[:schema_migrations_code].insert_conflict(**conflict_options).multi_insert(migrations)
+    DB[:schema_migrations_sources].insert_conflict(**conflict_options).multi_insert(migrations)
   end
 end

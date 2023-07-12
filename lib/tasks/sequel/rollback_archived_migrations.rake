@@ -8,9 +8,9 @@ namespace :sequel do
     DB.log_info("Finding applied migrations not present in current release...")
 
     Dir.mktmpdir do |tmpdir|
-      DB[:schema_migrations_code].each do |migration|
+      DB[:schema_migrations_sources].each do |migration|
         path = File.join(tmpdir, migration.fetch(:filename))
-        File.write(path, migration.fetch(:code))
+        File.write(path, migration.fetch(:source))
       end
 
       migrator = Sequel::TimestampMigrator.new(DB, tmpdir, allow_missing_migration_files: true)
