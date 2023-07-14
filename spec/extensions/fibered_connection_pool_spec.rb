@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
-DB_1 = Sequel.connect(ENV.fetch("DB_URL", "postgres:///sequel_plugins"))
-
-Sequel.extension(:fiber_concurrency)
 Sequel.extension(:fibered_connection_pool)
 
 RSpec.describe Sequel::FiberedConnectionPool do
   describe "#initialize" do
     it "creates pool with options" do
-      pool = described_class.new(Sequel::DATABASES.first, Sequel::DATABASES.first.opts)
+      pool = described_class.new(DB, DB.opts)
       expect(pool.size).to eq(0)
     end
   end
 
   describe "#hold" do
-    let(:pool) { described_class.new(Sequel::DATABASES.first, Sequel::DATABASES.first.opts) }
+    let(:pool) { described_class.new(DB, DB.opts) }
 
     it "creates connection" do
       pool.hold { 1 + 1 }
@@ -53,7 +50,7 @@ RSpec.describe Sequel::FiberedConnectionPool do
   end
 
   describe "#disconnect" do
-    let(:pool) { described_class.new(Sequel::DATABASES.first, Sequel::DATABASES.first.opts) }
+    let(:pool) { described_class.new(DB, DB.opts) }
 
     it "close each connection" do
       pool.hold { 1 + 1 }
@@ -66,10 +63,10 @@ RSpec.describe Sequel::FiberedConnectionPool do
 
   describe "#wait_for_connection" do
     let(:pool) do
-      opts = Sequel::DATABASES.first.opts.dup
+      opts = DB.opts.dup
       opts[:max_connections] = 0
 
-      described_class.new(Sequel::DATABASES.first, opts)
+      described_class.new(DB, opts)
     end
 
     it "waits for connection" do
@@ -98,6 +95,8 @@ RSpec.describe Sequel::FiberedConnectionPool do
 end
 
 RSpec.describe Sequel::ConnectionPool do
+  before { allow(Sequel).to receive(:current).and_return(Fiber.current) }
+
   it "return Sequel::FiberedConnectionPool if Sequel.current is a Fiber" do
     expect(described_class.connection_pool_class("test")).to eq(Sequel::FiberedConnectionPool)
   end
