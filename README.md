@@ -23,7 +23,7 @@ $ bundle
 - [`Synchronize`](#synchronize)
 - [`Methods in Migrations`](#methods-in-migrations)
 - [`Deferrable Foreign Keys`](#deferrable-foreign-keys)
-- [`Set Local`](#set-Local)
+- [`Set Local`](#set-local)
 - [`Migration Transaction Options`](#migration-transaction-options)
 - [`Fibered Connection Pool`](#fibered-connection-pool)
 
@@ -39,8 +39,8 @@ $ bundle
 - [`WithLock`](#withlock)
 
 # Tools
-- [`TimestampMigratorUndoExtension`](#TimestampMigratorUndoExtension)
-- [`Rails DBConsole`](#Rails-DBConsole)
+- [`TimestampMigratorUndoExtension`](#timestampmigratorundoextension)
+- [`Rails DBConsole`](#rails-dbconsole)
 
 ## CurrencyRates
 
