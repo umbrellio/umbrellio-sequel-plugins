@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-Sequel.extension(:fibered_connection_pool)
-
 RSpec.describe Sequel::FiberedConnectionPool do
   describe "#initialize" do
     it "creates pool with options" do
