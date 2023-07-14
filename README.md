@@ -266,7 +266,7 @@ faster.
 
 Enable:
 
-Put this code before your application connect to database
+Put this code before your application connects to database
 ```ruby
 Sequel.extension(:fiber_concurrency) # Default Sequel extension for fiber isolation level
 Sequel.extension(:fibered_connection_pool)
