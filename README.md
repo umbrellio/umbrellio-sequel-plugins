@@ -25,6 +25,7 @@ $ bundle
 - [`Deferrable Foreign Keys`](#Deferrable-Foreign-Keys)
 - [`Set Local`](#Set-Local)
 - [`Migration Transaction Options`](#Migration-Transaction-Options)
+- [`Fibered Connection Pool`](#Fibered-Connection-Pool)
 
 # Plugins
 
@@ -246,6 +247,29 @@ end
 BEGIN;
 SELECT '1';
 ROLLBACK;
+```
+
+## Fibered Connection Pool
+
+Sequel connection pool for fiber powered web servers or applications
+(e.g. [falcon](https://github.com/socketry/falcon), [async](https://github.com/socketry/async))
+
+Runtime dependency: [async](https://github.com/socketry/async)
+
+You need to make sure that command `require "async"` works for your project.
+
+The main difference from default `Sequel::ThreadedConnectionPool` that you can skip max_connections
+configuration to produce as much connection as your application neeeded.
+
+Also there is no any thead-safe code with synchronize and etc. So this connection pool works much
+faster.
+
+Enable:
+
+Put this code before your application connect to database
+```ruby
+Sequel.extension(:fiber_concurrency) # Default Sequel extension for fiber isolation level
+Sequel.extension(:fibered_connection_pool)
 ```
 
 ## AttrEncrypted

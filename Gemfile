@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gemspec
 
+gem "async"
 gem "money"
 gem "pg"
 gem "pry"
