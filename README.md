@@ -17,26 +17,26 @@ $ bundle
 
 # Extensions
 
-- [`CurrencyRates`](#CurrencyRates)
-- [`PGTools`](#PGTools)
-- [`Slave`](#Slave)
-- [`Synchronize`](#Synchronize)
-- [`Methods in Migrations`](#Methods-in-Migrations)
-- [`Deferrable Foreign Keys`](#Deferrable-Foreign-Keys)
-- [`Set Local`](#Set-Local)
-- [`Migration Transaction Options`](#Migration-Transaction-Options)
-- [`Fibered Connection Pool`](#Fibered-Connection-Pool)
+- [`CurrencyRates`](#currencyrates)
+- [`PGTools`](#pgtools)
+- [`Slave`](#slave)
+- [`Synchronize`](#synchronize)
+- [`Methods in Migrations`](#methods-in-migrations)
+- [`Deferrable Foreign Keys`](#deferrable-foreign-keys)
+- [`Set Local`](#set-Local)
+- [`Migration Transaction Options`](#migration-transaction-options)
+- [`Fibered Connection Pool`](#fibered-connection-pool)
 
 # Plugins
 
-- [`AttrEncrypted`](#AttrEncrypted)
-- [`Duplicate`](#Duplicate)
-- [`GetColumnValue`](#GetColumnValue)
-- [`MoneyAccessors`](#MoneyAccessors)
-- [`StoreAccessors`](#StoreAccessors)
-- [`Synchronize`](#Synchronize)
-- [`Upsert`](#Upsert)
-- [`WithLock`](#WithLock)
+- [`AttrEncrypted`](#attrencrypted)
+- [`Duplicate`](#duplicate)
+- [`GetColumnValue`](#getcolumnvalue)
+- [`MoneyAccessors`](#moneyaccessors)
+- [`StoreAccessors`](#storeaccessors)
+- [`Synchronize`](#synchronize)
+- [`Upsert`](#upsert)
+- [`WithLock`](#withlock)
 
 # Tools
 - [`TimestampMigratorUndoExtension`](#TimestampMigratorUndoExtension)
