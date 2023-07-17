@@ -4,7 +4,7 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "async"
+gem "async", "1.31.0"
 gem "money"
 gem "pg"
 gem "pry"
