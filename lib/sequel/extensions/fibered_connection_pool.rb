@@ -77,4 +77,12 @@ module Sequel::ConnectionPoolPatch
   end
 end
 
-Sequel::ConnectionPool::ClassMethods.prepend(Sequel::ConnectionPoolPatch)
+if RUBY_VERSION >= "3"
+  Sequel::ConnectionPool::ClassMethods.prepend(Sequel::ConnectionPoolPatch)
+else
+  class Sequel::ConnectionPool
+    class << self
+      prepend Sequel::ConnectionPoolPatch
+    end
+  end
+end
