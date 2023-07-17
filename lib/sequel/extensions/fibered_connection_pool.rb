@@ -78,6 +78,7 @@ module Sequel::ConnectionPoolPatch
 end
 
 # NOTE: Ruby 2.7 DOES NOT SUPPORT class methods prepend in this way
+# https://bugs.ruby-lang.org/issues/17423
 if RUBY_VERSION > "3"
   Sequel::ConnectionPool::ClassMethods.prepend(Sequel::ConnectionPoolPatch)
 else
