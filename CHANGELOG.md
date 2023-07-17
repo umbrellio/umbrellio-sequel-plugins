@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.14.0] -2023-07-17
+### Added
+- `Fibered Connection Pool` extension;
+
 ## [0.9.0] 2022-07-01
 ### Added
 - Add `--server` option to `rails dbconsole` command.

@@ -4,7 +4,7 @@ lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  gem_version = "0.13.0"
+  gem_version = "0.14.0"
 
   if ENV.fetch("PUBLISH_JOB", nil)
     release_version = "#{gem_version}.#{ENV.fetch("GITHUB_RUN_NUMBER")}"
