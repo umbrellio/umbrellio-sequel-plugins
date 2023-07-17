@@ -18,6 +18,7 @@ DB.extension :set_local
 DB.extension :synchronize
 
 Sequel.extension :deferrable_foreign_keys
+Sequel.extension :fibered_connection_pool
 Sequel.extension :migration
 Sequel.extension :pg_array_ops
 Sequel.extension :pg_json_ops

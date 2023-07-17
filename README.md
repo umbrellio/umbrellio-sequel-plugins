@@ -17,29 +17,30 @@ $ bundle
 
 # Extensions
 
-- [`CurrencyRates`](#CurrencyRates)
-- [`PGTools`](#PGTools)
-- [`Slave`](#Slave)
-- [`Synchronize`](#Synchronize)
-- [`Methods in Migrations`](#Methods-in-Migrations)
-- [`Deferrable Foreign Keys`](#Deferrable-Foreign-Keys)
-- [`Set Local`](#Set-Local)
-- [`Migration Transaction Options`](#Migration-Transaction-Options)
+- [`CurrencyRates`](#currencyrates)
+- [`PGTools`](#pgtools)
+- [`Slave`](#slave)
+- [`Synchronize`](#synchronize)
+- [`Methods in Migrations`](#methods-in-migrations)
+- [`Deferrable Foreign Keys`](#deferrable-foreign-keys)
+- [`Set Local`](#set-local)
+- [`Migration Transaction Options`](#migration-transaction-options)
+- [`Fibered Connection Pool`](#fibered-connection-pool)
 
 # Plugins
 
-- [`AttrEncrypted`](#AttrEncrypted)
-- [`Duplicate`](#Duplicate)
-- [`GetColumnValue`](#GetColumnValue)
-- [`MoneyAccessors`](#MoneyAccessors)
-- [`StoreAccessors`](#StoreAccessors)
-- [`Synchronize`](#Synchronize)
-- [`Upsert`](#Upsert)
-- [`WithLock`](#WithLock)
+- [`AttrEncrypted`](#attrencrypted)
+- [`Duplicate`](#duplicate)
+- [`GetColumnValue`](#getcolumnvalue)
+- [`MoneyAccessors`](#moneyaccessors)
+- [`StoreAccessors`](#storeaccessors)
+- [`Synchronize`](#synchronize)
+- [`Upsert`](#upsert)
+- [`WithLock`](#withlock)
 
 # Tools
-- [`TimestampMigratorUndoExtension`](#TimestampMigratorUndoExtension)
-- [`Rails DBConsole`](#Rails-DBConsole)
+- [`TimestampMigratorUndoExtension`](#timestampmigratorundoextension)
+- [`Rails DBConsole`](#rails-dbconsole)
 
 ## CurrencyRates
 
@@ -246,6 +247,29 @@ end
 BEGIN;
 SELECT '1';
 ROLLBACK;
+```
+
+## Fibered Connection Pool
+
+Sequel connection pool for fiber powered web servers or applications
+(e.g. [falcon](https://github.com/socketry/falcon), [async](https://github.com/socketry/async))
+
+Runtime dependency: [async](https://github.com/socketry/async)
+
+You need to make sure that command `require "async"` works for your project.
+
+The main difference from default `Sequel::ThreadedConnectionPool` that you can skip max_connections
+configuration to produce as much connection as your application neeeded.
+
+Also there is no any thead-safe code with synchronize and etc. So this connection pool works much
+faster.
+
+Enable:
+
+Put this code before your application connects to database
+```ruby
+Sequel.extension(:fiber_concurrency) # Default Sequel extension for fiber isolation level
+Sequel.extension(:fibered_connection_pool)
 ```
 
 ## AttrEncrypted
