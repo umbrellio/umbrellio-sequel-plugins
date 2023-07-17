@@ -77,7 +77,8 @@ module Sequel::ConnectionPoolPatch
   end
 end
 
-if RUBY_VERSION >= "3"
+# NOTE: Ruby 2.7 DOES NOT SUPPORT class methods prepend in this way
+if RUBY_VERSION > "3"
   Sequel::ConnectionPool::ClassMethods.prepend(Sequel::ConnectionPoolPatch)
 else
   class Sequel::ConnectionPool
