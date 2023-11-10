@@ -16,7 +16,7 @@ namespace :sequel do
 
     conflict_options = {
       target: :version,
-      update: { source: Sequel[:excluded][:source] },
+      update: { filename: Sequel[:excluded][:filename], source: Sequel[:excluded][:source] },
     }
 
     DB[:schema_migrations_sources].insert_conflict(**conflict_options).multi_insert(migrations)
