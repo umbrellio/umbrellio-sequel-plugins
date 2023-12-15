@@ -20,7 +20,7 @@ namespace :sequel do
       missing_migrations = applied_migrations - filesystem_migrations
 
       if missing_migrations.any?
-        missing_migrations.each do |migration|
+        missing_migrations.sort.reverse_each do |migration|
           DB.log_info("Rolling back migration #{migration}...")
           migrator.undo(migration)
         end
