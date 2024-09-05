@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.name = "umbrellio-sequel-plugins"
   spec.version = release_version || gem_version
-  spec.required_ruby_version = ">= 2.7"
+  spec.required_ruby_version = ">= 3.0"
 
   spec.authors = ["Team Umbrellio"]
   spec.email = ["oss@umbrellio.biz"]
@@ -25,5 +25,4 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency "sequel"
-  spec.add_runtime_dependency "symbiont-ruby"
 end

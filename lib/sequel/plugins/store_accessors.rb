@@ -52,8 +52,8 @@ module Sequel::Plugins::StoreAccessors
 
     def define_store_setter(column, field)
       @_store_accessors_module.module_eval do
-        define_method("#{field}=") do |value|
-          send("#{column}=", send(column).to_h.merge(field.to_s => value))
+        define_method(:"#{field}=") do |value|
+          send(:"#{column}=", send(column).to_h.merge(field.to_s => value))
         end
       end
     end
