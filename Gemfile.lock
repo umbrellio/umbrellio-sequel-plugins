@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    umbrellio-sequel-plugins (0.15.0)
+    umbrellio-sequel-plugins (0.16.0)
       sequel
 
 GEM
