@@ -40,7 +40,7 @@ module Sequel::Plugins::MoneyAccessors
     def money_setter(amount_column, currency_column)
       include_accessors_module!
       @_money_accessors_module.module_eval do
-        define_method("#{amount_column}=") do |value|
+        define_method(:"#{amount_column}=") do |value|
           case value
           when Money
             amount = value.to_d
@@ -52,7 +52,7 @@ module Sequel::Plugins::MoneyAccessors
           end
 
           super(amount)
-          send("#{currency_column}=", currency)
+          send(:"#{currency_column}=", currency)
         end
       end
     end

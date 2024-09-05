@@ -3,8 +3,11 @@ inherit_gem:
 
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 2.7
+  TargetRubyVersion: 3.0
 
 Naming/FileName:
   Exclude:
     - lib/umbrellio-sequel-plugins.rb
+
+RSpec/SpecFilePathFormat:
+  Enabled: false

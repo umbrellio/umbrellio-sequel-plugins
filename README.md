@@ -131,7 +131,7 @@ DB.synchronize_with([:ruby, :forever]) { p "Hey, I'm in transaction!"; sleep 5 }
 
 ## Methods in Migrations
 
-Enable: `Sequel.extension(:methods_in_migrations)`
+Enable: `Sequel.extension(:methods_in_migrations)`. Also, you will need to add and require `symbiont-ruby` gem.
 
 Support for method definitions and invocations inside `Sequel.migration`.
 

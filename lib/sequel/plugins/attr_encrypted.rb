@@ -48,10 +48,10 @@ module Sequel::Plugins::AttrEncrypted
 
     def define_encrypted_setter(attr, key)
       @_attr_encrypted_module.module_eval do
-        define_method("#{attr}=") do |value|
-          instance_variable_set("@#{attr}", value)
+        define_method(:"#{attr}=") do |value|
+          instance_variable_set(:"@#{attr}", value)
 
-          send("encrypted_#{attr}=", SimpleCrypt.encrypt(value.to_json, key))
+          send(:"encrypted_#{attr}=", SimpleCrypt.encrypt(value.to_json, key))
         end
       end
     end
@@ -59,11 +59,11 @@ module Sequel::Plugins::AttrEncrypted
     def define_encrypted_getter(attr, key)
       @_attr_encrypted_module.module_eval do
         define_method(attr.to_s) do
-          instance_variable_get("@#{attr}") || begin
-            decrypted = SimpleCrypt.decrypt(send("encrypted_#{attr}"), key)
+          instance_variable_get(:"@#{attr}") || begin
+            decrypted = SimpleCrypt.decrypt(send(:"encrypted_#{attr}"), key)
 
             result = decrypted.nil? ? decrypted : JSON.parse(decrypted)
-            instance_variable_set("@#{attr}", result)
+            instance_variable_set(:"@#{attr}", result)
           end
         end
       end
@@ -91,7 +91,7 @@ module Sequel::Plugins::AttrEncrypted
 
     def _reset_encrypted_attrs_ivars
       self.class.instance_variable_get(:@_encrypted_attributes)&.each do |attr|
-        instance_variable_set("@#{attr}", nil)
+        instance_variable_set(:"@#{attr}", nil)
       end
     end
   end
