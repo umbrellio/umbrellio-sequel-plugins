@@ -8,7 +8,7 @@ namespace :sequel do
        [:migrations_path, :migration_table, :migration_table_source,
         :use_transactions] => :environment do |_t, args|
     migrations_path = args[:migrations_path] || "db/migrate/*.rb"
-    migration_table_source = args[:migration_table_source].to_sym || :schema_migrations_sources
+    migration_table_source = args[:migration_table_source]&.to_sym || :schema_migrations_sources
     use_transactions = args[:use_transactions].nil? ? nil : args[:use_transactions] == "true"
 
     DB.log_info("Finding applied migrations not present in current release...")
