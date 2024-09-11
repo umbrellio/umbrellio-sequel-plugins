@@ -17,12 +17,13 @@ namespace :ch do
   task drop: :environment do
     CH.drop_database(ClickHouse.config.database, cluster: "click_cluster")
     DB.from(Sequel[:public][:clickhouse_migrations]).truncate
+    DB.from(Sequel[:public][:clickhouse_migrations_sources]).truncate
   end
 
   desc "Run migrations for the ClickHouse database"
   task migrate: :environment do
-    Rake::Task["sequel:archive_migrations"].invoke("db/migrate/*.rb",
-                                                   "clickhouse_migrations_sources")
+    Rake::Task["sequel:archive_migrations"]
+      .invoke("db/migrate/*.rb", "clickhouse_migrations_sources")
     Clickhouse::Migrator.migrate(to: ENV.fetch("VERSION", nil))
   end
 
@@ -42,8 +43,6 @@ namespace :ch do
 
   desc "Rollback any missing migrations for ClickHouse"
   task rollback_missing_migrations: :environment do
-    task = Rake::Task["sequel:rollback_missing_migrations"]
-    task.reenable
-    task.invoke(:clickhouse_migrations, "false")
+    Rake::Task["sequel:rollback_missing_migrations"].invoke(:clickhouse_migrations, "false")
   end
 end
