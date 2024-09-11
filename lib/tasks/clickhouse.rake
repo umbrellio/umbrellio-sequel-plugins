@@ -23,7 +23,7 @@ namespace :ch do
   desc "Run migrations for the ClickHouse database"
   task migrate: :environment do
     Rake::Task["sequel:archive_migrations"]
-      .invoke("db/migrate/*.rb", "clickhouse_migrations_sources")
+      .invoke("db/migrate/clickhouse/*.rb", "clickhouse_migrations_sources")
     Clickhouse::Migrator.migrate(to: ENV.fetch("VERSION", nil))
   end
 
