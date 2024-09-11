@@ -4,7 +4,9 @@ require "sequel/timestamp_migrator_undo_extension"
 
 namespace :sequel do
   desc "Rollback migrations that are absent in revision when deploying on staging"
-  task rollback_missing_migrations: :environment do
+  task :rollback_missing_migrations, [:table, :use_transactions] => :environment do |_t, args|
+    use_transactions = args[:use_transactions].nil? ? nil : args[:use_transactions] == "true"
+
     extract_migrations = lambda do |path|
       Dir.glob("#{path}/db/migrate/*.rb").map { |filename| File.basename(filename).to_i }
     end
@@ -19,7 +21,12 @@ namespace :sequel do
     puts migrations_to_rollback
 
     path = Rails.root.join("db/migrate")
-    migrator = Sequel::TimestampMigrator.new(DB, path, allow_missing_migration_files: true)
+    migrator_args = {
+      table: args[:table],
+      use_transactions: use_transactions,
+      allow_missing_migration_files: false,
+    }.compact
+    migrator = Sequel::TimestampMigrator.new(DB, path, migrator_args)
     applied_migrations = migrator.applied_migrations.map(&:to_i)
     migrations = applied_migrations.select { |m| m.in?(migrations_to_rollback) }.sort.reverse
 
