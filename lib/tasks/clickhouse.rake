@@ -21,11 +21,15 @@ namespace :ch do
 
   desc "Run migrations for the ClickHouse database"
   task migrate: :environment do
+    Rake::Task["sequel:archive_migrations"].invoke("db/migrate/*.rb",
+                                                   "clickhouse_migrations_sources")
     Clickhouse::Migrator.migrate(to: ENV.fetch("VERSION", nil))
   end
 
   desc "Rollback migrations for the ClickHouse database"
   task rollback: :environment do
+    Rake::Task["sequel:rollback_archived_migrations"]
+      .invoke("db/migrate/*.rb", "clickhouse_migrations", "clickhouse_migrations_sources", "false")
     Clickhouse::Migrator.rollback(to: ENV.fetch("VERSION", nil))
   end
 
