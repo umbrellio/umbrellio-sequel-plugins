@@ -30,7 +30,8 @@ namespace :ch do
   desc "Rollback migrations for the ClickHouse database"
   task rollback: :environment do
     Rake::Task["sequel:rollback_archived_migrations"]
-      .invoke("db/migrate/*.rb", "clickhouse_migrations", "clickhouse_migrations_sources", "false")
+      .invoke("db/migrate/clickhouse/*.rb", "clickhouse_migrations",
+              "clickhouse_migrations_sources", "false")
     Clickhouse::Migrator.rollback(to: ENV.fetch("VERSION", nil))
   end
 
