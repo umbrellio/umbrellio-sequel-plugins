@@ -25,7 +25,7 @@ namespace :ch do
   desc "Run migrations for the ClickHouse database"
   task migrate: :environment do
     path = "db/migrate/clickhouse/*.rb"
-    magrations_table = "clickhouse_migrations"
+    migrations_table = "clickhouse_migrations"
     migrations_sources_table = "clickhouse_migrations_sources"
     use_transactions = "false"
 
