@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "clickhouse/migrator"
+
 namespace :ch do
   desc "Create a ClickHouse database in the specified cluster"
   task create: :environment do
