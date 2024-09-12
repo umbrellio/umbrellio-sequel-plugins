@@ -31,7 +31,7 @@ namespace :ch do
 
     Rake::Task["sequel:archive_migrations"].invoke(path, migrations_sources_table)
     Rake::Task["sequel:rollback_archived_migrations"]
-      .invoke(path, magrations_table, migrations_sources_table, use_transactions)
+      .invoke(path, migrations_table, migrations_sources_table, use_transactions)
     Clickhouse::Migrator.migrate(to: ENV.fetch("VERSION", nil))
   end
 
