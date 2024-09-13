@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.17.1] - 2024-09-13
+## [0.17.0] - 2024-09-13
 ### Added
 - Rake task for managing ClickHouse database creation, migration, and rollback.
 - Support for tracking ClickHouse migrations in PostgreSQL via a migration tracking table.
