@@ -57,9 +57,6 @@ jobs:
       id-token: write
       contents: write
 
-    env:
-      PUBLISH_JOB: true
-
     # Run on push to master branch
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
