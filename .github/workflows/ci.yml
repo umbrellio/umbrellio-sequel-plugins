@@ -56,6 +56,9 @@ jobs:
       id-token: write
       contents: write
 
+    env:
+      PUBLISH_JOB: true
+
     # Run on push to master branch
     # if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     if: github.event_name == 'push'
@@ -69,5 +72,3 @@ jobs:
           bundler-cache: true
 
       - uses: rubygems/release-gem@v1
-        env:
-          PUBLISH_JOB: true
