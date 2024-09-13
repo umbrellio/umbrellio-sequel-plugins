@@ -71,6 +71,8 @@ jobs:
           ruby-version: ruby
 
       - run: bundle install
-      - run: git commit -am "update Gemfile.lock" --author="Github Actions <actions@github.com>"
+      - run: git config --global user.name "Github Actions"
+      - run: git config --global user.email "actions@github.com"
+      - run: git commit -am "update Gemfile.lock"
 
       - uses: rubygems/release-gem@v1
