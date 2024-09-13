@@ -51,6 +51,7 @@ jobs:
 
   release-gem:
     runs-on: ubuntu-latest
+    environment: Deploy
 
     permissions:
       id-token: write
