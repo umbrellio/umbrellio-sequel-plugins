@@ -49,19 +49,25 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy:
+  release-gem:
     runs-on: ubuntu-latest
 
-    environment: Deploy
+    permissions:
+      id-token: write
+      contents: write
+
+    env:
+      PUBLISH_JOB: true
 
     # Run on push to master branch
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: umbrellio/publish-ruby-gem-action@v1.0.4
+      - uses: ruby/setup-ruby@v1
         with:
-          api-key: ${{ secrets.RUBYGEMS_API_KEY }}
-        env:
-          PUBLISH_JOB: true
+          ruby-version: ruby
+          bundler-cache: true
+
+      - uses: rubygems/release-gem@v1
