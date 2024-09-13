@@ -69,10 +69,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ruby
-
-      - run: bundle install
-      - run: git config --global user.name "Github Actions"
-      - run: git config --global user.email "actions@github.com"
-      - run: git commit -am "update Gemfile.lock"
+          bundler-cache: true
 
       - uses: rubygems/release-gem@v1
