@@ -69,6 +69,6 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ruby
-          bundler-cache: true
+          bundler-cache: false
 
       - uses: rubygems/release-gem@v1
