@@ -71,5 +71,6 @@ jobs:
           ruby-version: ruby
 
       - run: bundle install
+      - run: git commit -am 'update Gemfile.lock'
 
       - uses: rubygems/release-gem@v1
