@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.17.1] - 2024-09-13
+### Added
+- Rake task for managing ClickHouse database creation, migration, and rollback.
+- Support for tracking ClickHouse migrations in PostgreSQL via a migration tracking table.
+### Changed
+- Modified `archive_migrations` Rake task to accept custom migration paths and source tables as arguments.
+- Modified `rollback_archived_migrations` Rake task to support configurable migration paths, migration tables, and transaction settings.
+- Modified `rollback_missing_migrations` Rake task to support optional transaction handling and custom migration tables.
+
 ## [0.14.0] -2023-07-17
 ### Added
 - `Fibered Connection Pool` extension;
