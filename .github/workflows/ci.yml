@@ -69,3 +69,5 @@ jobs:
           bundler-cache: true
 
       - uses: rubygems/release-gem@v1
+        env:
+          PUBLISH_JOB: true
