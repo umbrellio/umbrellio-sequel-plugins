@@ -29,9 +29,13 @@ namespace :ch do
     migrations_sources_table = :clickhouse_migrations_sources
     use_transactions = "false"
 
+    Rake::Task["sequel:archive_migrations"].reenable
     Rake::Task["sequel:archive_migrations"].invoke(path, migrations_sources_table)
+
+    Rake::Task["sequel:rollback_archived_migrations"].reenable
     Rake::Task["sequel:rollback_archived_migrations"]
       .invoke(path, migrations_table, migrations_sources_table, use_transactions)
+
     Clickhouse::Migrator.migrate(to: ENV.fetch("VERSION", nil))
   end
 
@@ -49,6 +53,7 @@ namespace :ch do
 
   desc "Rollback any missing migrations for ClickHouse"
   task rollback_missing_migrations: :environment do
+    Rake::Task["sequel:rollback_missing_migrations"].reenable
     Rake::Task["sequel:rollback_missing_migrations"].invoke(:clickhouse_migrations, "false")
   end
 end
