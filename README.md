@@ -485,6 +485,130 @@ Overrides Rails default `dbconsole` and `db` commands. In order to use it, you h
 require "umbrellio_sequel_plugins/rails_db_command"
 ```
 
+# Database Tasks for ClickHouse and Sequel
+
+## ClickHouse Rake Tasks
+
+We have added a set of Rake tasks to manage ClickHouse database migrations and database operations. These tasks are located in the `namespace :ch`.
+
+### Task: `ch:create`
+
+Creates a ClickHouse database in the specified cluster.
+
+```bash
+rake ch:create
+```
+This task will create a ClickHouse database as defined in the configuration file with the option to specify the cluster using the ClickHouse.config.database.
+
+Example: 
+```ruby
+ClickHouse.config do |config|
+  config.assign Rails.application.config_for(:clickhouse)
+end
+```
+
+### Task: `ch:create_migration_table`
+
+Creates a migration tracking table for ClickHouse in PostgreSQL. This table will be used to track applied migrations for the ClickHouse database.
+
+```bash
+rake ch:create_migration_table
+```
+
+### Task: `ch:drop`
+
+Drops the ClickHouse database and truncates the migration tracking table.
+
+```bash
+rake ch:drop
+```
+
+### Task: `ch:migrate`
+
+Runs the migrations for the ClickHouse database from the db/migrate/clickhouse directory.
+
+```bash
+rake ch:migrate
+```
+
+You can specify a version to migrate to using the VERSION environment variable.
+
+### Task: `ch:rollback`
+
+Rollbacks the migrations for the ClickHouse database to a specified version.
+
+```bash
+rake ch:rollback VERSION=<version_number>
+```
+
+If no version is provided, it rolls back the last migration.
+
+### Task: `ch:reset`
+
+Drops, recreates, and runs all migrations for the ClickHouse database. This is useful for resetting the entire ClickHouse setup.
+
+```bash
+rake ch:reset
+```
+
+### Task: `ch:rollback_missing_migrations`
+
+Rollbacks any missing migrations for the ClickHouse database by comparing applied migrations to the available migration files.
+
+```bash
+rake ch:rollback_missing_migrations
+```
+
+### Sequel Rake Tasks
+
+Several tasks have been added under the namespace :sequel to provide better management of migrations and rollbacks in Sequel. These tasks help in managing PostgreSQL and ClickHouse migrations.
+
+### Task: `sequel:archive_migrations`
+
+Archives migration source code into a PostgreSQL table for tracking purposes. This task can now accept custom paths for migrations and source tables.
+
+```bash
+rake sequel:archive_migrations[migrations_path, migration_table_source]
+```
+
+- `migrations_path`: Path to the migration files (default is `db/migrate/*.rb`).
+- `migration_table_source`: Table to store migration source code (default is `:schema_migrations_sources`).
+
+### `Task: sequel:rollback_archived_migrations`
+
+Rollbacks migrations that were applied but are no longer present in the current release. The task supports additional options such as custom migration paths, tables, and transaction settings.
+
+```bash
+rake sequel:rollback_archived_migrations[migrations_path, migration_table, migration_table_source, use_transactions]
+```
+
+- `migrations_path`: Path to the migration files (default is `db/migrate/*.rb`).
+- `migration_table`: Table used to track applied migrations (default is `:schema_migrations`).
+- `migration_table_source`: Table storing migration source code (default is `:schema_migrations_sources`).
+- `use_transactions`: Whether to use transactions for rolling back (default is `false`).
+
+### Task: `sequel:rollback_missing_migrations`
+
+Rollbacks migrations that are absent in the current release when deploying to staging or production. This task helps ensure consistency between different versions.
+
+```bash
+rake sequel:rollback_missing_migrations[table, use_transactions]
+```
+
+- `table`: The table used to track migrations (optional).
+- `use_transactions`: Whether to use transactions during rollback (default is `false`).
+
+### Task: `sequel:rollback_missing_migrations`
+
+This task specifically helps during deployment by rolling back any migrations that are not present in the current release.
+
+```bash
+rake sequel:rollback_missing_migrations[table, use_transactions]
+```
+
+- `table`: The table used to track migrations (optional).
+- `use_transactions`: Whether or not to use transactions when rolling back (optional).
+
 ## License
 
 Released under MIT License.
