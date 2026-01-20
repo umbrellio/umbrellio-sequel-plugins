@@ -18,17 +18,8 @@ namespace :ch do
   desc "Drop the ClickHouse database and truncate the migration tracking table"
   task drop: :environment do
     CH.drop_database(ClickHouse.config.database, cluster: "click_cluster", if_exists: true)
-
-    begin
-      DB.from(Sequel[:public][:clickhouse_migrations]).truncate
-      DB.from(Sequel[:public][:clickhouse_migrations_sources]).truncate
-    rescue Sequel::DatabaseError => error
-      if error.cause.is_a?(PG::UndefinedTable) && error.message.include?("clickhouse_migrations")
-        puts "Table 'clickhouse_migrations' doesn't exist yet, handling gracefully"
-      else
-        raise
-      end
-    end
+    DB.from(Sequel[:public][:clickhouse_migrations]).truncate
+    DB.from(Sequel[:public][:clickhouse_migrations_sources]).truncate
   end
 
   desc "Run migrations for the ClickHouse database"
