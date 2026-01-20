@@ -17,7 +17,7 @@ namespace :ch do
 
   desc "Drop the ClickHouse database and truncate the migration tracking table"
   task drop: :environment do
-    CH.drop_database(ClickHouse.config.database, cluster: "click_cluster")
+    CH.drop_database(ClickHouse.config.database, cluster: "click_cluster", if_exists: true)
     DB.from(Sequel[:public][:clickhouse_migrations]).truncate
     DB.from(Sequel[:public][:clickhouse_migrations_sources]).truncate
   end
