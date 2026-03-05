@@ -10,7 +10,7 @@ module Sequel::Plugins::Upsert
     #
     # @return [Sequel::Dataset] dataset
     def upsert_dataset(target: primary_key)
-      cols = columns - Array(primary_key)
+      cols = columns - Array(primary_key) - Array(target)
 
       update_spec = cols.map { |x| [x, Sequel[:excluded][x]] }
       where_spec = cols.map { |x| Sequel::Plugins::Upsert.distinct_expr(table_name, x) }.reduce(:|)
