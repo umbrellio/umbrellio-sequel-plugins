@@ -9,8 +9,8 @@ module Sequel::Plugins::Upsert
     #   User.upsert_dataset.insert(name: "John", email: "jd@test.com")
     #
     # @return [Sequel::Dataset] dataset
-    def upsert_dataset(target: primary_key)
-      cols = columns - Array(primary_key) - Array(target)
+    def upsert_dataset(target: primary_key, skip_update_columns: [])
+      cols = columns - Array(primary_key) - Array(target) - skip_update_columns
 
       update_spec = cols.map { |x| [x, Sequel[:excluded][x]] }
       where_spec = cols.map { |x| Sequel::Plugins::Upsert.distinct_expr(table_name, x) }.reduce(:|)
