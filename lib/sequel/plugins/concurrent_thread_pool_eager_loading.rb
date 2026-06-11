@@ -59,7 +59,7 @@ module Sequel
           end
 
           super.each do |v|
-            if v.is_a?(Sequel::Database::ConcurrentThreadPool::BaseProxy)
+            if Sequel::Database::ConcurrentThreadPool::BaseProxy === v # rubocop:disable Style/CaseEquality
               v.__value
             end
           end

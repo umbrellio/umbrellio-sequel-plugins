@@ -27,7 +27,7 @@ module Sequel
       def initialize(executor, &block)
         super()
 
-        @future = Concurrent::Future.execute(executor: executor, &block)
+        @future = Concurrent::Promises.future_on(executor, &block)
       end
 
       def __value
@@ -74,24 +74,30 @@ module Sequel
     end
 
     module DatabaseMethods
-      def self.extended(db)
-        db.instance_exec do
-          case pool.pool_type
-          when :single, :sharded_single
-            raise Error, "cannot load async_thread_pool extension " \
-                         "if using single or sharded_single connection pool"
+      class << self
+        def make_finalizer(executor) = proc { executor.shutdown }
+
+        def extended(db)
+          db.instance_exec do
+            case pool.pool_type
+            when :single, :sharded_single
+              raise Error, "cannot load concurrent_thread_pool extension " \
+                           "if using single or sharded_single connection pool"
+            end
+
+            executor, owned = choose_executor(opts)
+            proxy_klass =
+              typecast_value_boolean(opts[:preempt_async_thread]) ? PreemptableProxy : Proxy
+
+            define_singleton_method(:async_job_class) { proxy_klass }
+            define_singleton_method(:async_thread_executor) { executor }
+
+            finalizer =
+              Sequel::Database::ConcurrentThreadPool::DatabaseMethods.make_finalizer(executor)
+            ObjectSpace.define_finalizer(db, finalizer) if owned
+
+            extend_datasets(DatasetMethods)
           end
-
-          executor, owned = choose_executor(opts)
-          proxy_klass =
-            typecast_value_boolean(opts[:preempt_async_thread]) ? PreemptableProxy : Proxy
-
-          define_singleton_method(:async_job_class) { proxy_klass }
-          define_singleton_method(:async_thread_executor) { executor }
-
-          ObjectSpace.define_finalizer(db, proc { executor.shutdown }) if owned
-
-          extend_datasets(DatasetMethods)
         end
       end
 
