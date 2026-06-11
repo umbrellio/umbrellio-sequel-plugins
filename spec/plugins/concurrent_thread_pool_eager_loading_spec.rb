@@ -10,8 +10,24 @@ end
 
 RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
   let(:db) { make_concurrent_eager_db }
+  let(:artist_class) do
+    klass = Class.new(Sequel::Model(db[:cel_artists]))
+    klass.plugin :concurrent_thread_pool_eager_loading
+    klass.one_to_many :albums, class: album_class, key: :artist_id
+    klass
+  end
+  let(:album_class) do
+    klass = Class.new(Sequel::Model(db[:cel_albums]))
+    klass.plugin :concurrent_thread_pool_eager_loading
+    klass.many_to_one :artist, class_name: "Artist"
+    klass.one_to_many :tracks, class: track_class, key: :album_id
+    klass
+  end
+  let(:track_class) do
+    Class.new(Sequel::Model(db[:cel_tracks]))
+  end
 
-  before(:all) do
+  before do
     setup_db = make_concurrent_eager_db
 
     setup_db.create_table(:cel_artists) do
@@ -32,8 +48,10 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
     end
 
     artist = setup_db[:cel_artists].returning(:id).insert(name: "Artist A").first[:id]
-    album1 = setup_db[:cel_albums].returning(:id).insert(title: "Album 1", artist_id: artist).first[:id]
-    album2 = setup_db[:cel_albums].returning(:id).insert(title: "Album 2", artist_id: artist).first[:id]
+    album1 = setup_db[:cel_albums].returning(:id)
+                                  .insert(title: "Album 1", artist_id: artist).first[:id]
+    album2 = setup_db[:cel_albums].returning(:id)
+                                  .insert(title: "Album 2", artist_id: artist).first[:id]
     setup_db[:cel_tracks].insert(name: "Track 1", album_id: album1)
     setup_db[:cel_tracks].insert(name: "Track 2", album_id: album1)
     setup_db[:cel_tracks].insert(name: "Track 3", album_id: album2)
@@ -41,7 +59,7 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
     setup_db.disconnect
   end
 
-  after(:all) do
+  after do
     cleanup_db = make_concurrent_eager_db
     cleanup_db.drop_table(:cel_tracks, :cel_albums, :cel_artists)
     cleanup_db.disconnect
@@ -49,30 +67,11 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
 
   after { db.disconnect rescue nil }
 
-  let(:artist_class) do
-    klass = Class.new(Sequel::Model(db[:cel_artists]))
-    klass.plugin :concurrent_thread_pool_eager_loading
-    klass.one_to_many :albums, class: album_class, key: :artist_id
-    klass
-  end
-
-  let(:album_class) do
-    klass = Class.new(Sequel::Model(db[:cel_albums]))
-    klass.plugin :concurrent_thread_pool_eager_loading
-    klass.many_to_one :artist, class_name: "Artist"
-    klass.one_to_many :tracks, class: track_class, key: :album_id
-    klass
-  end
-
-  let(:track_class) do
-    Class.new(Sequel::Model(db[:cel_tracks]))
-  end
-
   describe "#eager_load_concurrently" do
     it "loads multiple associations concurrently" do
       albums = album_class.eager_load_concurrently.eager(:tracks).all
       expect(albums.length).to eq(2)
-      expect(albums.flat_map { |a| a.tracks }.length).to eq(3)
+      expect(albums.flat_map(&:tracks).length).to eq(3)
     end
 
     it "sets eager_load_concurrently option on dataset" do
@@ -86,7 +85,7 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
       album_class.plugin :concurrent_thread_pool_eager_loading, always: true
       albums = album_class.eager_load_serially.eager(:tracks).all
       expect(albums.length).to eq(2)
-      expect(albums.flat_map { |a| a.tracks }.length).to eq(3)
+      expect(albums.flat_map(&:tracks).length).to eq(3)
     end
 
     it "sets eager_load_concurrently option to false" do
@@ -104,7 +103,7 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
 
     it "loads associations correctly without explicit eager_load_concurrently" do
       albums = album_class.eager(:tracks).all
-      expect(albums.flat_map { |a| a.tracks }.length).to eq(3)
+      expect(albums.flat_map(&:tracks).length).to eq(3)
     end
   end
 
@@ -112,7 +111,7 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
     it "does not use threads (no mutex set)" do
       # Single association: perform_eager_loads short-circuits, no concurrent execution
       albums = album_class.eager_load_concurrently.eager(:tracks).all
-      expect(albums.flat_map { |a| a.tracks }.length).to eq(3)
+      expect(albums.flat_map(&:tracks).length).to eq(3)
     end
   end
 
@@ -121,8 +120,8 @@ RSpec.describe "concurrent_thread_pool_eager_loading plugin" do
       albums = album_class.eager_load_concurrently.eager(:tracks).all
       artists = artist_class.eager_load_concurrently.eager(:albums).all
 
-      expect(albums.flat_map { |a| a.tracks }.length).to eq(3)
-      expect(artists.flat_map { |a| a.albums }.length).to eq(2)
+      expect(albums.flat_map(&:tracks).length).to eq(3)
+      expect(artists.flat_map(&:albums).length).to eq(2)
     end
   end
 

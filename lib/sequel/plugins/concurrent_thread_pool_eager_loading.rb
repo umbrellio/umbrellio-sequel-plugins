@@ -16,7 +16,7 @@ module Sequel
     #   Album.plugin :concurrent_thread_pool_eager_loading, always: true
     module ConcurrentThreadPoolEagerLoading
       def self.configure(mod, opts = OPTS)
-        if opts.has_key?(:always)
+        if opts.key?(:always)
           mod.instance_variable_set(:@always_eager_load_concurrently, opts[:always])
         end
       end
@@ -54,19 +54,19 @@ module Sequel
           return super if !eager_load_concurrently? || eager_load_data.length < 2
 
           mutex = Mutex.new
-          eager_load_data.each_value do |eo|
-            eo[:mutex] = mutex
+          eager_load_data.each_value do |elo|
+            elo[:mutex] = mutex
           end
 
           super.each do |v|
-            if Sequel::Database::ConcurrentThreadPool::BaseProxy === v
+            if v.is_a?(Sequel::Database::ConcurrentThreadPool::BaseProxy)
               v.__value
             end
           end
         end
 
-        def perform_eager_load(loader, eo)
-          eo[:mutex] ? db.send(:async_run) { super } : super
+        def perform_eager_load(loader, elo)
+          elo[:mutex] ? db.send(:async_run) { super } : super
         end
       end
     end
