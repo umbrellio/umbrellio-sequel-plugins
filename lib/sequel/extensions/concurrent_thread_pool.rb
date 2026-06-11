@@ -106,8 +106,9 @@ module Sequel
       def choose_executor(opts)
         if opts[:async_thread_executor]
           [opts[:async_thread_executor], false]
-        elsif opts[:num_async_threads]
-          num = typecast_value_integer(opts[:num_async_threads])
+        else
+          num = opts[:num_async_threads] ? typecast_value_integer(opts[:num_async_threads]) :
+                                Integer(opts[:max_connections] || 4)
           raise Error, "must have positive number for num_async_threads" if num <= 0
           [Concurrent::ThreadPoolExecutor.new(
             min_threads: num,
@@ -115,8 +116,6 @@ module Sequel
             max_queue: 0,
             fallback_policy: :abort,
           ), true]
-        else
-          [Concurrent.global_io_executor, false]
         end
       end
 

@@ -16,8 +16,9 @@ RSpec.describe "concurrent_thread_pool extension" do
 
   describe "executor configuration" do
     context "default (no options)" do
-      it "uses global_io_executor" do
-        expect(db.async_thread_executor).to eq(Concurrent.global_io_executor)
+      it "uses 4 threads" do
+        expect(db.async_thread_executor).to be_a(Concurrent::ThreadPoolExecutor)
+        expect(db.async_thread_executor.max_length).to eq(4)
       end
     end
 
@@ -26,7 +27,6 @@ RSpec.describe "concurrent_thread_pool extension" do
 
       it "creates dedicated ThreadPoolExecutor" do
         expect(db.async_thread_executor).to be_a(Concurrent::ThreadPoolExecutor)
-        expect(db.async_thread_executor).not_to eq(Concurrent.global_io_executor)
       end
 
       it "respects the thread count" do
