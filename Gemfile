@@ -6,6 +6,7 @@ gemspec
 
 gem "async"
 gem "money"
+gem "opentelemetry-api"
 gem "pg"
 gem "pry"
 gem "rake"
