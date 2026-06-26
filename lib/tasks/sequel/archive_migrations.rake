@@ -15,7 +15,7 @@ namespace :sequel do
 
     migrations = Rails.root.glob(migrations_path).map do |file|
       filename = file.basename.to_s
-      { version: filename.to_i, filename: filename, source: file.read }
+      { version: filename.to_i, filename:, source: file.read }
     end
 
     conflict_options = {

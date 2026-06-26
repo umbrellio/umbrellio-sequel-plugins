@@ -11,8 +11,8 @@ module Sequel
         __value.public_send(...)
       end
 
-      def respond_to_missing?(*args)
-        __value.respond_to?(*args)
+      def respond_to_missing?(*)
+        __value.respond_to?(*)
       end
 
       [:!, :==, :!=, :instance_eval, :instance_exec].each do |method|
@@ -24,10 +24,10 @@ module Sequel
 
     # Default proxy: schedules block via Concurrent::Future, blocks on first access.
     class Proxy < BaseProxy
-      def initialize(executor, &block)
+      def initialize(executor, &)
         super()
 
-        @future = Concurrent::Promises.future_on(executor, &block)
+        @future = Concurrent::Promises.future_on(executor, &)
       end
 
       def __value
@@ -119,7 +119,7 @@ module Sequel
         end
       end
 
-      def async_run(&block)
+      def async_run(&)
         if defined?(OpenTelemetry)
           otel_context = OpenTelemetry::Context.current
           async_job_class.new(async_thread_executor) do
@@ -131,7 +131,7 @@ module Sequel
             end
           end
         else
-          async_job_class.new(async_thread_executor, &block)
+          async_job_class.new(async_thread_executor, &)
         end
       end
     end

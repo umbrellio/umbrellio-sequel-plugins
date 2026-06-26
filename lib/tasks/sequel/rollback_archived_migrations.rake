@@ -21,7 +21,7 @@ namespace :sequel do
 
       migrator_args = {
         table: args[:migration_table],
-        use_transactions: use_transactions,
+        use_transactions:,
         allow_missing_migration_files: false,
       }.compact
       migrator = Sequel::TimestampMigrator.new(DB, tmpdir, migrator_args)

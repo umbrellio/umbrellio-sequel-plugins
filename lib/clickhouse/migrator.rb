@@ -18,13 +18,13 @@ module Clickhouse
       migrator(target: target.to_i).run
     end
 
-    def migrator(**opts)
+    def migrator(**)
       Sequel::TimestampMigrator.new(
         DB,
         Rails.root.join("db/migrate/clickhouse"),
         table: :clickhouse_migrations,
         use_transactions: false,
-        **opts,
+        **,
       )
     end
   end

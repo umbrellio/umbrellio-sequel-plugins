@@ -11,9 +11,9 @@ module SimpleMigrationExtension
 end
 
 module MigratorExtension
-  def checked_transaction(migration, &block)
+  def checked_transaction(migration, &)
     if _use_transaction?(migration)
-      _transaction(migration, &block)
+      _transaction(migration, &)
     else
       yield
     end
@@ -38,11 +38,11 @@ module MigratorExtension
     end
   end
 
-  def _transaction(migration, &block)
+  def _transaction(migration, &)
     if migration.transaction_opts.nil?
-      db.transaction(&block)
+      db.transaction(&)
     else
-      db.transaction(migration.transaction_opts, &block)
+      db.transaction(migration.transaction_opts, &)
     end
   end
 end

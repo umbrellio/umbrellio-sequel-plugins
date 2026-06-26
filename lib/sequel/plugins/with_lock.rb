@@ -10,7 +10,7 @@ module Sequel::Plugins::WithLock
       @__locked = true
 
       begin
-        db.transaction(savepoint: savepoint) do
+        db.transaction(savepoint:) do
           lock!(mode)
           yield
         end

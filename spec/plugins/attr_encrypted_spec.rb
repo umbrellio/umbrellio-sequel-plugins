@@ -7,7 +7,7 @@ DB.create_table(:encrypted_orders) do
 end
 
 RSpec.describe Sequel::Plugins::AttrEncrypted do
-  subject(:order) { order_model.create(name: name, secret_data: secret_data) }
+  subject(:order) { order_model.create(name:, secret_data:) }
 
   let(:name) { "Ivan" }
   let(:secret_data) { { "some_key" => "Some Value" } }
