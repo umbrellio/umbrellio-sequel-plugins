@@ -172,6 +172,75 @@ RSpec.describe "concurrent_thread_pool extension" do
     end
   end
 
+  describe "OpenTelemetry context propagation" do
+    let(:otel_context_mod) do
+      Module.new do
+        class << self
+          def current = Thread.current[:_test_otel_ctx]
+          def current=(ctx)
+            Thread.current[:_test_otel_ctx] = ctx
+          end
+
+          def attach(ctx)
+            prev = Thread.current[:_test_otel_ctx]
+            Thread.current[:_test_otel_ctx] = ctx
+            { prev: prev }
+          end
+
+          def detach(token)
+            Thread.current[:_test_otel_ctx] = token[:prev]
+          end
+        end
+      end
+    end
+
+    before do
+      stub_const("OpenTelemetry", Module.new)
+      stub_const("OpenTelemetry::Context", otel_context_mod)
+    end
+
+    after { Thread.current[:_test_otel_ctx] = nil }
+
+    it "passes calling-thread context to attach in worker" do
+      sentinel = Object.new
+      OpenTelemetry::Context.current = sentinel
+      received = []
+
+      allow(OpenTelemetry::Context).to receive(:attach) do |ctx|
+        received << ctx
+        { prev: nil }
+      end
+      allow(OpenTelemetry::Context).to receive(:detach)
+
+      db.fetch("SELECT 1 AS val").async.all.__value
+
+      expect(received).to include(sentinel)
+    end
+
+    it "detaches token after block completes" do
+      token = { prev: nil }
+      detached = []
+      allow(OpenTelemetry::Context).to receive(:attach).and_return(token)
+      allow(OpenTelemetry::Context).to receive(:detach) { |t| detached << t }
+
+      db.fetch("SELECT 1 AS val").async.all.__value
+
+      expect(detached).to include(token)
+    end
+
+    it "detaches token even when block raises" do
+      token = { prev: nil }
+      detached = []
+      allow(OpenTelemetry::Context).to receive(:attach).and_return(token)
+      allow(OpenTelemetry::Context).to receive(:detach) { |t| detached << t }
+
+      result = db.fetch("SELECT 1/0").async.all
+      expect { result.__value }.to raise_error(Sequel::DatabaseError)
+
+      expect(detached).to include(token)
+    end
+  end
+
   describe "async_job_class" do
     it "is Proxy by default" do
       expect(db.async_job_class).to eq(Sequel::Database::ConcurrentThreadPool::Proxy)

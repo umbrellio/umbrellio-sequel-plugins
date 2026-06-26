@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    umbrellio-sequel-plugins (0.18.0)
+    umbrellio-sequel-plugins (0.18.1)
       concurrent-ruby
       sequel
 
