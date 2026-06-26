@@ -177,6 +177,7 @@ RSpec.describe "concurrent_thread_pool extension" do
       Module.new do
         class << self
           def current = Thread.current[:_test_otel_ctx]
+
           def current=(ctx)
             Thread.current[:_test_otel_ctx] = ctx
           end

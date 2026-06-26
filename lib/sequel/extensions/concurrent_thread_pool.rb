@@ -125,7 +125,7 @@ module Sequel
           async_job_class.new(async_thread_executor) do
             token = OpenTelemetry::Context.attach(otel_context)
             begin
-              block.call
+              yield
             ensure
               OpenTelemetry::Context.detach(token)
             end
