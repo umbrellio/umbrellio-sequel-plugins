@@ -25,10 +25,10 @@ module Sequel::Plugins::Upsert
     # Executes the upsert request
     #
     # @param row [Hash] values
-    # @param options [Hash] options
+    # @param target [Symbol] target column
     #
     # @example
-    #   User.upsert(name: "John", email: "jd@test.com", target: :email)
+    #   User.upsert({name: "John", email: "jd@test.com"}, target: :email)
     # @return [Sequel::Model]
     def upsert(row, **)
       upsert_dataset(**).insert(sequel_values(row))
