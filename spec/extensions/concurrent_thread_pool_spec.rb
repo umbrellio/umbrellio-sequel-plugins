@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-require "concurrent"
-
-ASYNC_DB_URL = ENV.fetch("DB_URL", "postgres:///sequel_plugins")
-
-def make_concurrent_db(**opts)
-  Sequel.connect(ASYNC_DB_URL, **opts).tap { |d| d.extension(:concurrent_thread_pool) }
-end
+require_relative "concurrent_thread_pool_helpers"
 
 RSpec.describe "concurrent_thread_pool extension" do
   let(:db) { make_concurrent_db(**db_opts) }
@@ -169,61 +163,6 @@ RSpec.describe "concurrent_thread_pool extension" do
 
       results = Array.new(8) { Thread.new { proxy.__value } }.map(&:value)
       expect(results).to all(eq([{ val: 1 }]))
-    end
-  end
-
-  describe "OpenTelemetry context propagation" do
-    require "opentelemetry-api"
-
-    let(:otel_key) { OpenTelemetry::Context.create_key("sequel-test") }
-
-    after do
-      # ensure no context leak between examples
-      OpenTelemetry::Context.detach(OpenTelemetry::Context.attach(OpenTelemetry::Context::ROOT))
-    end
-
-    it "propagates calling-thread context to worker thread" do
-      ctx = OpenTelemetry::Context.current.set_value(otel_key, "sentinel")
-      token = OpenTelemetry::Context.attach(ctx)
-      captured = nil
-
-      db.send(:async_run) { captured = OpenTelemetry::Context.current.value(otel_key) }.__value
-
-      expect(captured).to eq("sentinel")
-    ensure
-      OpenTelemetry::Context.detach(token)
-    end
-
-    it "restores context in worker thread after block completes" do
-      ctx = OpenTelemetry::Context.current.set_value(otel_key, "sentinel")
-      token = OpenTelemetry::Context.attach(ctx)
-      value_after = :not_set
-
-      db.send(:async_run) do
-        inner_token = OpenTelemetry::Context.attach(OpenTelemetry::Context::ROOT)
-        OpenTelemetry::Context.detach(inner_token)
-        value_after = OpenTelemetry::Context.current.value(otel_key)
-      end.__value
-
-      expect(value_after).to eq("sentinel")
-    ensure
-      OpenTelemetry::Context.detach(token)
-    end
-
-    it "propagates context even when block raises" do
-      ctx = OpenTelemetry::Context.current.set_value(otel_key, "sentinel")
-      token = OpenTelemetry::Context.attach(ctx)
-      captured = nil
-
-      result = db.send(:async_run) do
-        captured = OpenTelemetry::Context.current.value(otel_key)
-        raise "boom"
-      end
-
-      expect { result.__value }.to raise_error(RuntimeError, "boom")
-      expect(captured).to eq("sentinel")
-    ensure
-      OpenTelemetry::Context.detach(token)
     end
   end
 
