@@ -120,15 +120,11 @@ module Sequel
       end
 
       def async_run(&)
-        if defined?(OpenTelemetry::Context)
-          otel_context = OpenTelemetry::Context.current
+        otel_context = OpenTelemetry::Context.current if defined?(OpenTelemetry::Context)
 
-          if otel_context.equal?(OpenTelemetry::Context::ROOT)
-            async_job_class.new(async_thread_executor, &)
-          else
-            async_job_class.new(async_thread_executor) do
-              OpenTelemetry::Context.with_current(otel_context, &)
-            end
+        if otel_context && !otel_context.equal?(OpenTelemetry::Context::ROOT)
+          async_job_class.new(async_thread_executor) do
+            OpenTelemetry::Context.with_current(otel_context, &)
           end
         else
           async_job_class.new(async_thread_executor, &)
