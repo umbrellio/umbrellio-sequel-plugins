@@ -42,7 +42,7 @@ RSpec.describe "with_lock" do
     context "with outer transaction" do
       def update_model!
         DB.transaction do
-          model.with_lock(savepoint: savepoint) do
+          model.with_lock(savepoint:) do
             model.update(count: 1)
             raise
           end

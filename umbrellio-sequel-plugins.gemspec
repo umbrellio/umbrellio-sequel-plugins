@@ -5,8 +5,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name = "umbrellio-sequel-plugins"
-  spec.version = "0.18.0"
-  spec.required_ruby_version = ">= 3.0"
+  spec.version = "0.19.0"
+  spec.required_ruby_version = ">= 3.3"
 
   spec.authors = ["Team Umbrellio"]
   spec.email = ["oss@umbrellio.biz"]

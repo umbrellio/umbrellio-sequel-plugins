@@ -42,8 +42,8 @@ DB.create_table!(:publishers) { primary_key :id }
 
 RSpec.describe "deferrable_foreign_keys" do
   before do
-    create_table_with_foreign_key(:books, :author_id, :authors, deferrable: deferrable)
-    create_table_with_foreign_key(:journals, :author_id, :authors, deferrable: deferrable)
+    create_table_with_foreign_key(:books, :author_id, :authors, deferrable:)
+    create_table_with_foreign_key(:journals, :author_id, :authors, deferrable:)
   end
 
   let(:deferrable) { true }
@@ -58,8 +58,8 @@ RSpec.describe "deferrable_foreign_keys" do
 
   context "when table is altered" do
     before do
-      alter_table_add_foreign_key(:books, :publisher_id, :publishers, deferrable: deferrable)
-      alter_table_add_foreign_key(:journals, :publisher_id, :publishers, deferrable: deferrable)
+      alter_table_add_foreign_key(:books, :publisher_id, :publishers, deferrable:)
+      alter_table_add_foreign_key(:journals, :publisher_id, :publishers, deferrable:)
     end
 
     after do

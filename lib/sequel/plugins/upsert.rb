@@ -16,7 +16,7 @@ module Sequel::Plugins::Upsert
       where_spec = cols.map { |x| Sequel::Plugins::Upsert.distinct_expr(table_name, x) }.reduce(:|)
 
       dataset.insert_conflict(
-        target: target,
+        target:,
         update: update_spec,
         update_where: where_spec,
       )
@@ -25,21 +25,21 @@ module Sequel::Plugins::Upsert
     # Executes the upsert request
     #
     # @param row [Hash] values
-    # @param options [Hash] options
+    # @param target [Symbol] target column
     #
     # @example
-    #   User.upsert(name: "John", email: "jd@test.com", target: :email)
+    #   User.upsert({name: "John", email: "jd@test.com"}, target: :email)
     # @return [Sequel::Model]
-    def upsert(row, **options)
-      upsert_dataset(**options).insert(sequel_values(row))
+    def upsert(row, **)
+      upsert_dataset(**).insert(sequel_values(row))
     end
 
     # Executes the upsert request for multiple rows
     # @see #upsert
     # @see #upsert_dataset
-    def multi_upsert(rows, **options)
+    def multi_upsert(rows, **)
       rows = rows.map { |row| sequel_values(row) }
-      upsert_dataset(**options).multi_insert(rows)
+      upsert_dataset(**).multi_insert(rows)
     end
 
     # Returns formatted row values

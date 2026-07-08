@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          version=$(grep -oP '(?<=version = ")[^"]+' umbrellio-sequel-plugins.gemspec)
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - name: Check if release already exists
+        id: check
+        run: |
+          if gh release view "${{ steps.version.outputs.tag }}" &>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: ruby/setup-ruby@v1
+        if: steps.check.outputs.exists == 'false'
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+
+      - name: Build gem
+        if: steps.check.outputs.exists == 'false'
+        run: gem build umbrellio-sequel-plugins.gemspec
+
+      - name: Push gem to RubyGems
+        if: steps.check.outputs.exists == 'false'
+        run: gem push *.gem
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.GEM_HOST_API_KEY }}
+
+      - uses: softprops/action-gh-release@v3
+        if: steps.check.outputs.exists == 'false'
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          files: "*.gem"
+          generate_release_notes: true

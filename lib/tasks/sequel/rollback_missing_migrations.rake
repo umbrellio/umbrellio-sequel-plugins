@@ -23,7 +23,7 @@ namespace :sequel do
     path = Rails.root.join("db/migrate")
     migrator_args = {
       table: args[:table],
-      use_transactions: use_transactions,
+      use_transactions:,
       allow_missing_migration_files: false,
     }.compact
     migrator = Sequel::TimestampMigrator.new(DB, path, migrator_args)

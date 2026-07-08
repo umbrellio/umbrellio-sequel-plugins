@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-require "concurrent"
-
-ASYNC_DB_URL = ENV.fetch("DB_URL", "postgres:///sequel_plugins")
-
-def make_concurrent_db(**opts)
-  Sequel.connect(ASYNC_DB_URL, **opts).tap { |d| d.extension(:concurrent_thread_pool) }
-end
+require_relative "concurrent_thread_pool_helpers"
 
 RSpec.describe "concurrent_thread_pool extension" do
   let(:db) { make_concurrent_db(**db_opts) }

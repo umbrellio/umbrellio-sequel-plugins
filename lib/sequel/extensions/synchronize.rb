@@ -24,9 +24,9 @@ module Sequel
     def synchronize_with(*args, timeout: 10, savepoint: false, skip_if_locked: false)
       key = lock_key_for(args)
 
-      transaction(savepoint: savepoint) do
+      transaction(savepoint:) do
         hash = key_hash(key)
-        if get_lock(key, hash, timeout: timeout, skip_if_locked: skip_if_locked)
+        if get_lock(key, hash, timeout:, skip_if_locked:)
           log_info("locked with #{key} (#{hash})")
           yield
         end
