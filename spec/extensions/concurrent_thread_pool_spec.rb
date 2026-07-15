@@ -166,6 +166,57 @@ RSpec.describe "concurrent_thread_pool extension" do
     end
   end
 
+  describe "async_job_wrapper" do
+    it "runs block as-is when wrapper is not set" do
+      expect(db.send(:async_run) { :ok }.__value).to eq(:ok)
+    end
+
+    context "with async_job_wrapper:" do
+      let(:wrapper_calls) { [] }
+      let(:wrapper) do
+        lambda do |&block|
+          wrapper_calls << :called
+          marker = Thread.current[:async_job_marker]
+          lambda do
+            Thread.current[:async_job_marker] = marker
+            block.call
+          end
+        end
+      end
+      let(:db_opts) { { async_job_wrapper: wrapper } }
+
+      it "wraps the job before scheduling" do
+        Thread.current[:async_job_marker] = "sentinel"
+        captured = nil
+
+        db.send(:async_run) { captured = Thread.current[:async_job_marker] }.__value
+
+        expect(wrapper_calls).to eq([:called])
+        expect(captured).to eq("sentinel")
+      end
+
+      it "applies wrapper to dataset async methods" do
+        Thread.current[:async_job_marker] = "from-dataset"
+        captured = nil
+
+        db.fetch("SELECT 1 AS val").async.map do |row|
+          captured = Thread.current[:async_job_marker]
+          row[:val]
+        end.__value
+
+        expect(wrapper_calls).to eq([:called])
+        expect(captured).to eq("from-dataset")
+      end
+
+      it "propagates exceptions from wrapped block" do
+        result = db.send(:async_run) { raise "boom" }
+
+        expect { result.__value }.to raise_error(RuntimeError, "boom")
+        expect(wrapper_calls).to eq([:called])
+      end
+    end
+  end
+
   describe "async_job_class" do
     it "is Proxy by default" do
       expect(db.async_job_class).to eq(Sequel::Database::ConcurrentThreadPool::Proxy)

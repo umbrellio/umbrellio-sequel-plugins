@@ -26,6 +26,7 @@ $ bundle
 - [`Set Local`](#set-local)
 - [`Migration Transaction Options`](#migration-transaction-options)
 - [`Fibered Connection Pool`](#fibered-connection-pool)
+- [`Concurrent Thread Pool`](#concurrent-thread-pool)
 
 # Plugins
 
@@ -270,6 +271,55 @@ Put this code before your application connects to database
 ```ruby
 Sequel.extension(:fiber_concurrency) # Default Sequel extension for fiber isolation level
 Sequel.extension(:fibered_connection_pool)
+```
+
+## Concurrent Thread Pool
+
+Async query execution on a [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby) thread pool (alternative to Sequel's built-in `async_thread_pool`).
+
+Enable (after connecting; not with `single_threaded` / `sharded_single` pools):
+
+```ruby
+DB.extension(:concurrent_thread_pool)
+```
+
+Options (pass to `Sequel.connect` before loading the extension):
+
+- `:num_async_threads` — pool size (defaults to `:max_connections`, usually 4)
+- `:async_thread_executor` — reuse an existing Concurrent executor
+- `:preempt_async_thread` — allow the calling thread to run the job if the pool hasn't started it yet
+- `:async_job_wrapper` — callable that wraps each async job (see OpenTelemetry below)
+
+Example:
+
+```ruby
+foos = DB[:foos].async.all
+bars = DB[:bars].async.all
+# both queries run concurrently; access forces wait
+foos.length
+bars.length
+```
+
+### OpenTelemetry
+
+Context is **not** propagated automatically. Pass `:async_job_wrapper` so each `async_run` job runs under the calling thread's OpenTelemetry context:
+
+```ruby
+otel_wrapper = lambda do |&block|
+  ctx = OpenTelemetry::Context.current
+
+  if ctx.equal?(OpenTelemetry::Context::ROOT)
+    block
+  else
+    -> { OpenTelemetry::Context.with_current(ctx, &block) }
+  end
+end
+
+DB = Sequel.connect(ENV["DATABASE_URL"], async_job_wrapper: otel_wrapper)
+DB.extension(:concurrent_thread_pool)
+
+# Dataset#async and Model eager loading both go through async_run
+DB[:users].async.all
 ```
 
 ## AttrEncrypted
