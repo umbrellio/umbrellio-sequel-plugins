@@ -3,9 +3,21 @@
 require "opentelemetry-api"
 require_relative "concurrent_thread_pool_helpers"
 
-RSpec.describe "concurrent_thread_pool extension OpenTelemetry context propagation" do
-  let(:db) { make_concurrent_db }
+RSpec.describe "concurrent_thread_pool extension OpenTelemetry via async_job_wrapper" do
   let(:otel_key) { OpenTelemetry::Context.create_key("sequel-test") }
+  let(:otel_wrapper) do
+    lambda do |&block|
+      ctx = OpenTelemetry::Context.current
+
+      if ctx.equal?(OpenTelemetry::Context::ROOT)
+        block
+      else
+        -> { OpenTelemetry::Context.with_current(ctx, &block) }
+      end
+    end
+  end
+  let(:db) { make_concurrent_db(**db_opts) }
+  let(:db_opts) { { async_job_wrapper: otel_wrapper } }
 
   after { db.disconnect rescue nil }
 
@@ -15,15 +27,6 @@ RSpec.describe "concurrent_thread_pool extension OpenTelemetry context propagati
     db.send(:async_run) { captured = OpenTelemetry::Context.current.value(otel_key) }.__value
 
     expect(captured).to be_nil
-  end
-
-  it "does not error when OpenTelemetry is defined without Context" do
-    db = make_concurrent_db
-    stub_const("OpenTelemetry", Object.new)
-
-    expect { db.send(:async_run) { :ok }.__value }.not_to raise_error
-  ensure
-    db.disconnect rescue nil
   end
 
   it "propagates calling-thread context to worker thread" do
@@ -37,7 +40,7 @@ RSpec.describe "concurrent_thread_pool extension OpenTelemetry context propagati
   end
 
   context "with single-thread executor" do
-    let(:db) { make_concurrent_db(num_async_threads: 1) }
+    let(:db_opts) { { num_async_threads: 1, async_job_wrapper: otel_wrapper } }
 
     it "restores context in worker thread after block completes" do
       OpenTelemetry::Context.with_value(otel_key, "sentinel") do
@@ -63,6 +66,20 @@ RSpec.describe "concurrent_thread_pool extension OpenTelemetry context propagati
 
       expect { result.__value }.to raise_error(RuntimeError, "boom")
       expect(captured).to eq("sentinel")
+    end
+  end
+
+  context "without async_job_wrapper" do
+    let(:db_opts) { {} }
+
+    it "does not propagate OpenTelemetry context" do
+      captured = :not_set
+
+      OpenTelemetry::Context.with_value(otel_key, "sentinel") do
+        db.send(:async_run) { captured = OpenTelemetry::Context.current.value(otel_key) }.__value
+      end
+
+      expect(captured).to be_nil
     end
   end
 end
