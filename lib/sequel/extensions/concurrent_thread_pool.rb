@@ -85,6 +85,10 @@ module Sequel
                            "if using single or sharded_single connection pool"
             end
 
+            if (wrapper = opts[:async_job_wrapper]) && !wrapper.respond_to?(:call)
+              raise Error, "async_job_wrapper must respond to call"
+            end
+
             executor, owned = choose_executor(opts)
             proxy_klass =
               typecast_value_boolean(opts[:preempt_async_thread]) ? PreemptableProxy : Proxy
@@ -119,13 +123,9 @@ module Sequel
         end
       end
 
-      def async_run(&)
-        if opts[:async_job_wrapper]
-          wrapped_block = opts[:async_job_wrapper].call(&)
-          async_job_class.new(async_thread_executor, &wrapped_block)
-        else
-          async_job_class.new(async_thread_executor, &)
-        end
+      def async_run(&block)
+        block = opts[:async_job_wrapper].call(&block) if opts[:async_job_wrapper]
+        async_job_class.new(async_thread_executor, &block)
       end
     end
 

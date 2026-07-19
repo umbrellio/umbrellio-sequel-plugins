@@ -52,6 +52,14 @@ RSpec.describe "concurrent_thread_pool extension" do
     ensure
       d&.disconnect
     end
+
+    it "raises on non-callable async_job_wrapper" do
+      d = Sequel.connect(ASYNC_DB_URL, async_job_wrapper: Object.new)
+      expect { d.extension(:concurrent_thread_pool) }
+        .to raise_error(Sequel::Error, /async_job_wrapper must respond to call/)
+    ensure
+      d&.disconnect
+    end
   end
 
   describe "Dataset#async" do

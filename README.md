@@ -302,6 +302,8 @@ bars.length
 
 ### OpenTelemetry
 
+**Migrating from 0.19.0:** automatic OpenTelemetry context propagation was removed in 0.20.0. Without `:async_job_wrapper`, async workers no longer inherit the calling thread's span context — configure the wrapper below to restore it.
+
 Context is **not** propagated automatically. Pass `:async_job_wrapper` so each `async_run` job runs under the calling thread's OpenTelemetry context:
 
 ```ruby
